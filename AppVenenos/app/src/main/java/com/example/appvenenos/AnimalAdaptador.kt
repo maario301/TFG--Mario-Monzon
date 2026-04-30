@@ -1,4 +1,5 @@
 package com.example.appvenenos
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,11 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-
 class AnimalAdaptador(private val listaAnimales: List<Animal>) :
     RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
 
-    // Esta clase "sujeta" los elementos de tu diseño item_animal.xml
     class AnimalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgAnimal: ImageView = view.findViewById(R.id.imgAnimal)
         val txtNombre: TextView = view.findViewById(R.id.txtNombreComun)
@@ -30,7 +29,6 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         holder.txtCientifico.text = animal.nombre_cientifico
         holder.txtToxicidad.text = "Toxicidad: ${animal.toxicidad}"
 
-        // Glide carga la imagen desde la URL de tu Django
         Glide.with(holder.itemView.context)
             .load(animal.imagen_url)
             .into(holder.imgAnimal)

@@ -5,7 +5,8 @@ package com.example.appvenenos
 
 data class Animal(
     val id: Int,
-    @SerializedName("nombre_comun") val nombre_comun: String,
+
+    @SerializedName("nombre_servidor") val nombre_comun: String,
     @SerializedName("nombre_cientifico") val nombre_cientifico: String,
     @SerializedName("descripcion") val descripcion: String, // Añadido
     @SerializedName("toxicidad") val toxicidad: String,

@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.back_office_url if hasattr(admin.site, 'back_office_url') else admin.site.urls), # O simplemente admin.site.urls
+    # La ruta del panel de control que ya tienes
     path('admin/', admin.site.urls),
-    path('api/', include('animales.urls')), # <--- Esta es la clave
+    
+    # Esta es la línea maestra: redirige todo lo que sea 'api/...' 
+    # al archivo urls.py de tu carpeta 'animales'
+    path('api/', include('animales.urls')), 
 ]
