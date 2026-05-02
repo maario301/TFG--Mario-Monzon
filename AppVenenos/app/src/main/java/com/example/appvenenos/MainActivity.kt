@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,26 +16,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val rvAnimales = findViewById<RecyclerView>(R.id.rvAnimales)
-        // Configuración obligatoria del RecyclerView
         rvAnimales.layoutManager = LinearLayoutManager(this)
 
-        ConexionApi.instancia.obtenerAnimales().enqueue(object : Callback<List<Animal>> {
-            override fun onResponse(call: Call<List<Animal>>, response: Response<List<Animal>>) {
-                if (response.isSuccessful) {
-                    val animales = response.body()
-                    if (animales != null && animales.isNotEmpty()) {
-                        rvAnimales.adapter = AnimalAdaptador(animales)
-                        Toast.makeText(this@MainActivity, "Cargados: ${animales.size}", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this@MainActivity, "Base de datos vacía", Toast.LENGTH_LONG).show()
+        // 1. Recuperamos el token que guardamos antes con el SessionManager
+        val sessionManager = SessionManager(this)
+        val tokenGuardado = sessionManager.fetchAuthToken()
+
+        if (tokenGuardado != null) {
+            // 2. Si tenemos token, pedimos los animales enviando "Bearer llave"
+            // Importante: usamos .getAnimales("Bearer $tokenGuardado")
+            ConexionApi.instancia.getAnimales("Bearer $tokenGuardado").enqueue(object : Callback<List<Animal>> {
+                override fun onResponse(call: Call<List<Animal>>, response: Response<List<Animal>>) {
+                    if (response.isSuccessful) {
+                        val animales = response.body()
+                        if (animales != null) {
+                            rvAnimales.adapter = AnimalAdaptador(animales)
+                        }
+                    } else if (response.code() == 401) {
+                        Toast.makeText(this@MainActivity, "Sesión caducada. Haz login", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<List<Animal>>, t: Throwable) {
-                Log.e("API_ERROR", t.message ?: "Error")
-                Toast.makeText(this@MainActivity, "Sin conexión", Toast.LENGTH_LONG).show()
-            }
-        })
+                override fun onFailure(call: Call<List<Animal>>, t: Throwable) {
+                    Log.e("API_ERROR", t.message ?: "Error")
+                }
+            })
+        } else {
+            // 3. Si NO hay token, aquí es donde deberías abrir la pantalla de Login
+            Toast.makeText(this, "No hay sesión activa", Toast.LENGTH_SHORT).show()
+        }
     }
 }
