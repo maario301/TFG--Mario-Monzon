@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Acceso TFG Venenos"
+        android:text="Venenos App"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="30dp"/>
@@ -18,7 +18,7 @@
         android:id="@+id/etUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Usuario (Superusuario Django)"
+        android:hint="Usuario "
         android:inputType="text" />
 
     <EditText
