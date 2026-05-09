@@ -10,9 +10,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Este XML es el que tiene el FrameLayout y la barra de navegación
-        setContentView(R.layout.pagina_inicio)
+        setContentView(R.layout.main_layout)
 
-        val navBar = findViewById<BottomNavigationView>(R.id.barra_navegacion)        // Cargar la pantalla de Inicio al abrir la app
+        val navBar = findViewById<BottomNavigationView>(R.id.barra_navegacion)     // Cargar la pantalla de Inicio al abrir la app
         if (savedInstanceState == null) {
             cambiarPagina(PaginaInicio())
         }

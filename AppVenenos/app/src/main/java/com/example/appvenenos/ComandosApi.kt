@@ -7,9 +7,13 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ComandosApi {
-    @POST("api/token/") // Asegúrate de que termina en /
+    @POST("api/token/")
     fun login(@Body credentials: Map<String, String>): Call<TokenResponse>
 
-    @GET("api/animales/") // Asegúrate de que termina en /
+    // --- AÑADE ESTA FUNCIÓN AQUÍ ---
+    @POST("api/register/") // O la ruta que use tu backend (ej: "api/usuarios/")
+    fun registrar(@Body datos: Map<String, String>): Call<Void>
+
+    @GET("api/animales/")
     fun getAnimales(@Header("Authorization") token: String): Call<List<Animal>>
 }

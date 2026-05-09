@@ -4,46 +4,45 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="#FFFFFF">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Venenos App"
+        android:text="Crear Cuenta"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="30dp"/>
 
     <EditText
-        android:id="@+id/etUsuario"
+        android:id="@+id/etRegistroUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Usuario "
+        android:hint="Nombre de usuario"
         android:inputType="text" />
 
     <EditText
-        android:id="@+id/etPassword"
+        android:id="@+id/etRegistroPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
         android:inputType="textPassword"
         android:layout_marginTop="10dp"/>
 
-    <Button
-        android:id="@+id/btnLogin"
+    <EditText
+        android:id="@+id/etConfirmarPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Entrar"
-        android:layout_marginTop="20dp"/>
+        android:hint="Repetir contraseña"
+        android:inputType="textPassword"
+        android:layout_marginTop="10dp"/>
 
-    <TextView
-        android:id="@+id/tvRegistro"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btnFinalizarRegistro"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¿No tienes cuenta? Regístrate"
-        android:textColor="@color/black"
-        android:layout_marginTop="20dp"
-        android:padding="10dp"
-        android:textSize="14sp" />
+        android:text="Registrarse"
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

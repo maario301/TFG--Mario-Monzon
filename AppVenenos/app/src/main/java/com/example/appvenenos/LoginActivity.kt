@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +18,16 @@ class LoginActivity : AppCompatActivity() {
         val etUsuario = findViewById<EditText>(R.id.etUsuario)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val tvRegistro = findViewById<android.widget.TextView>(R.id.tvRegistro) // Fuera del click de login
         val sessionManager = SessionManager(this)
 
+        // --- BOTÓN PARA IR A REGISTRO ---
+        tvRegistro.setOnClickListener {
+            val intent = Intent(this, RegistroActivity::class.java)
+            startActivity(intent)
+        }
+
+        // --- BOTÓN PARA INICIAR SESIÓN ---
         btnLogin.setOnClickListener {
             val user = etUsuario.text.toString()
             val pass = etPassword.text.toString()
@@ -33,12 +40,9 @@ class LoginActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             val token = response.body()?.access
                             if (token != null) {
-                                // GUARDAMOS LA LLAVE
                                 sessionManager.saveAuthToken(token)
-
-                                // VAMOS A LA LISTA DE ANIMALES
                                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                                finish() // Cerramos el login para que no pueda volver atrás
+                                finish()
                             }
                         } else {
                             Toast.makeText(this@LoginActivity, "Usuario o clave incorrectos", Toast.LENGTH_SHORT).show()
@@ -49,6 +53,8 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Error de conexión con AWS", Toast.LENGTH_SHORT).show()
                     }
                 })
+            } else {
+                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
     }

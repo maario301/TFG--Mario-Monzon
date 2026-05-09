@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,23 +12,24 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppVenenos">
-
+        android:theme="@style/Theme.AppVenenos"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".RegistroActivity"
+            android:exported="false" />
         <!-- 1. El LoginActivity ahora es el que lanza la App -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- 2. El MainActivity se queda como una actividad secundaria -->
+        </activity> <!-- 2. El MainActivity se queda como una actividad secundaria -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>
