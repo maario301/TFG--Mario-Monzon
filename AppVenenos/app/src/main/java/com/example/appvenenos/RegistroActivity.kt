@@ -34,26 +34,46 @@ class RegistroActivity : AppCompatActivity() {
                     Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
 
     private fun ejecutarRegistro(user: String, pass: String) {
-        val datos = mapOf("username" to user, "password" to pass)
+        // Añadimos el campo "email". Aunque sea inventado,
+        // Django lo necesita para validar la creación del usuario.
+        val datos = mapOf(
+            "username" to user,
+            "email" to "$user@ejemplo.com",
+            "password" to pass
+        )
 
         ConexionApi.instancia.registrar(datos).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@RegistroActivity, "¡Usuario $user creado!", Toast.LENGTH_LONG).show()
-                    finish() // Cerramos esta pantalla y volvemos al Login
+                    Toast.makeText(
+                        this@RegistroActivity,
+                        "¡Usuario $user creado!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
                 } else {
-                    Toast.makeText(this@RegistroActivity, "Error: El usuario ya existe o datos inválidos", Toast.LENGTH_SHORT).show()
+                    // Si falla, es probable que el nombre de usuario ya esté pillado
+                    Toast.makeText(
+                        this@RegistroActivity,
+                        "Error: Revisa si el usuario ya existe",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Toast.makeText(this@RegistroActivity, "Error de conexión con AWS", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@RegistroActivity,
+                    "Error de red: ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
