@@ -10,8 +10,7 @@ interface ComandosApi {
     @POST("api/token/")
     fun login(@Body credentials: Map<String, String>): Call<TokenResponse>
 
-    // --- AÑADE ESTA FUNCIÓN AQUÍ ---
-    @POST("api/register/") // O la ruta que use tu backend (ej: "api/usuarios/")
+    @POST("api/register/") // <--- ASEGÚRATE DE QUE ESTÉ ASÍ, CON BARRA AL FINAL
     fun registrar(@Body datos: Map<String, String>): Call<Void>
 
     @GET("api/animales/")
