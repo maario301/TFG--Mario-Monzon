@@ -11,13 +11,14 @@ router.register(r'animales', AnimalViewSet)
 router.register(r'consultas', ConsultaViewSet)
 
 urlpatterns = [
-    # Mueve el registro aquí arriba
+    # 1. LA RUTA DE REGISTRO DEBE IR PRIMERO Y SIN "api/" 
+    # (Porque el "api/" ya se lo pone el archivo principal)
     path('register/', RegistroUsuarioView.as_view(), name='registro_usuario'),
-    
-    # Rutas para el Login (JWT)
+
+    # 2. Las rutas del Token
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # El router al final
+    # 3. El router al final
     path('', include(router.urls)),
 ]

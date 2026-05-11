@@ -41,39 +41,26 @@ class RegistroActivity : AppCompatActivity() {
     }
 
     private fun ejecutarRegistro(user: String, pass: String) {
-        // Añadimos el campo "email". Aunque sea inventado,
-        // Django lo necesita para validar la creación del usuario.
+        // Django necesita estos TRES campos para validar el registro
         val datos = mapOf(
             "username" to user,
-            "email" to "$user@ejemplo.com",
+            "email" to "$user@test.com", // Añadimos esto como campo obligatorio
             "password" to pass
         )
 
         ConexionApi.instancia.registrar(datos).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@RegistroActivity,
-                        "¡Usuario $user creado!",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@RegistroActivity, "¡Usuario $user creado!", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    // Si falla, es probable que el nombre de usuario ya esté pillado
-                    Toast.makeText(
-                        this@RegistroActivity,
-                        "Error: Revisa si el usuario ya existe",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Si entra aquí, mira la consola de AWS: verás un 400 o un 404
+                    Toast.makeText(this@RegistroActivity, "Error en el servidor: Revisa los datos", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Toast.makeText(
-                    this@RegistroActivity,
-                    "Error de red: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@RegistroActivity, "Fallo de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
