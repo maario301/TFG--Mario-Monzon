@@ -41,19 +41,21 @@ class RegistroActivity : AppCompatActivity() {
     }
 
     private fun ejecutarRegistro(user: String, pass: String) {
+        // Solo enviamos usuario y contraseña como quieres
         val datos = mapOf(
             "username" to user,
-            "email" to "$user@ejemplo.com",
             "password" to pass
         )
 
         ConexionApi.instancia.registrar(datos).enqueue(object : retrofit2.Callback<Void> {
             override fun onResponse(call: retrofit2.Call<Void>, response: retrofit2.Response<Void>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(this@RegistroActivity, "¡Usuario $user creado!", Toast.LENGTH_LONG).show()
+                // Esto nos dirá qué está pasando de verdad
+                if (response.code() == 201) {
+                    Toast.makeText(this@RegistroActivity, "¡CONSEGUIDO! Usuario creado", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    Toast.makeText(this@RegistroActivity, "Error: El usuario ya existe", Toast.LENGTH_SHORT).show()
+                    // Esto te mostrará el número de error real (404, 400, etc.)
+                    Toast.makeText(this@RegistroActivity, "Servidor respondió con: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
