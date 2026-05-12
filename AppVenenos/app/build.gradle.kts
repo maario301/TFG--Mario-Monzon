@@ -5,20 +5,21 @@ plugins {
 
 android {
     namespace = "com.example.appvenenos"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 34 // Cambia el bloque compileSdk { version... } por esto
 
     defaultConfig {
         applicationId = "com.example.appvenenos"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34 // Te recomiendo usar 34 por ahora, que es la estable
         versionCode = 1
         versionName = "1.0"
 
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    aaptOptions {
+        noCompress("tflite")
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -53,6 +54,19 @@ dependencies {
 
     // Glide: Para que se vean las fotos de los animales
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // CameraX (Para ver a través de la lente)
+    val cameraxVersion = "1.3.0"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+
+    // TensorFlow Lite (El cerebro de la IA)
+    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0") // Opcional, para que vaya más rápido
 
 
 }
