@@ -5,11 +5,14 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from .models import Animal, Consulta
 from .serializers import AnimalSerializer, ConsultaSerializer
+from rest_framework import filters # Importa esto arriba
 
-# Tus ViewSets actuales (déjalos como están)
 class AnimalViewSet(viewsets.ModelViewSet):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
+    # Esto permite que la App busque por nombre exacto en la URL
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['nombre_cientifico']
 
 class ConsultaViewSet(viewsets.ModelViewSet):
     queryset = Consulta.objects.all()
