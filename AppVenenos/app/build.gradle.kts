@@ -5,15 +5,14 @@ plugins {
 
 android {
     namespace = "com.example.appvenenos"
-    compileSdk = 34 // Cambia el bloque compileSdk { version... } por esto
+    compileSdk = 34 // CAMBIA S34 por 35 (o 36 si te lo sigue pidiendo)
 
     defaultConfig {
         applicationId = "com.example.appvenenos"
         minSdk = 24
-        targetSdk = 34 // Te recomiendo usar 34 por ahora, que es la estable
+        targetSdk = 34// CAMBIA 34 por 35 para que coincida
         versionCode = 1
         versionName = "1.0"
-
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
