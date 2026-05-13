@@ -1,5 +1,6 @@
-package com.example.appvenenos.páginas
+package com.example.appvenenos.paginas
 
+import android.content.Context // Importante añadir esto
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.appvenenos.* import retrofit2.Call
+import com.example.appvenenos.*
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -22,12 +24,28 @@ class PaginaHistorial : Fragment() {
         val rv = vista.findViewById<RecyclerView>(R.id.rvAnimales)
         rv.layoutManager = LinearLayoutManager(requireContext())
 
+        // 1. Miramos si la cámara guardó algún animal recientemente
+        val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
+        val animalBuscado = prefs.getString("ultimo_animal", null)
+
         val token = SessionManager(requireContext()).fetchAuthToken()
         if (token != null) {
             ConexionApi.instancia.getAnimales("Bearer $token").enqueue(object : Callback<List<Animal>> {
                 override fun onResponse(call: Call<List<Animal>>, response: Response<List<Animal>>) {
                     if (response.isSuccessful) {
-                        rv.adapter = AnimalAdaptador(response.body() ?: emptyList())
+                        val listaCompleta = response.body() ?: emptyList()
+
+                        // 2. Si venimos de la cámara y hay un nombre, filtramos la lista
+                        if (animalBuscado != null) {
+                            val listaFiltrada = listaCompleta.filter { it.nombre_cientifico == animalBuscado }
+                            rv.adapter = AnimalAdaptador(listaFiltrada)
+
+                            // Limpiamos la preferencia para que al volver a entrar salga todo el historial
+                            prefs.edit().remove("ultimo_animal").apply()
+                        } else {
+                            // Si entramos normal al historial, mostramos todo
+                            rv.adapter = AnimalAdaptador(listaCompleta)
+                        }
                     }
                 }
                 override fun onFailure(call: Call<List<Animal>>, t: Throwable) {

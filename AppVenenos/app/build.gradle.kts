@@ -68,5 +68,8 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
     implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0") // Opcional, para que vaya más rápido
 
+    // Librerías de TensorFlow Lite para que funcione la IA
+    implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
 
 }

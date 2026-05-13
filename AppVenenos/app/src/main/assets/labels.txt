@@ -13,8 +13,8 @@ Conus_geographus
 Crotalus_adamanteus
 Daboia_russelii
 Dasyatis_pastinaca
-Dendrobates_tinctorius
 Dendroaspis_polylepis
+Dendrobates_tinctorius
 Enhydrina_schistosa
 Hadronyche_formidabilis
 Hapalochlaena_maculosa
@@ -47,3 +47,4 @@ Takifugu_rubripes
 Varanus_komodoensis
 Vespa_mandarinia
 Vipera_latastei
+Otros

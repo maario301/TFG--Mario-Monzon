@@ -1,4 +1,4 @@
-package com.example.appvenenos.páginas
+package com.example.appvenenos.paginas
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.appvenenos.R
 
-class PaginaCamara : Fragment() {
+class PaginaMapa : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.pagina_camara, container, false)
+        return inflater.inflate(R.layout.pagina_mapa, container, false)
     }
 }
