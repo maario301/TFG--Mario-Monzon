@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "nombre_comun": "Mocasín de agua",
-      "nombre_cientifico": "agkistrodon_piscivorus",
+      "nombre_cientifico": "Agkistrodon_piscivorus",
       "descripcion": "Única víbora semiacuática del mundo, muy territorial.",
       "toxicidad": "Media-Alta",
       "sintomas": "Equimosis, necrosis y dolor intenso localizado.",
@@ -17,7 +17,7 @@
     "pk": 2,
     "fields": {
       "nombre_comun": "Escorpión de cola gorda",
-      "nombre_cientifico": "androctonus_australis",
+      "nombre_cientifico": "Androctonus_australis",
       "descripcion": "Escorpión desértico africano conocido por su cola extremadamente gruesa.",
       "toxicidad": "Alta",
       "sintomas": "Disfunción cardíaca, convulsiones y exceso de secreciones bronquiales.",
@@ -30,7 +30,7 @@
     "pk": 3,
     "fields": {
       "nombre_comun": "Erizo de mar de fuego",
-      "nombre_cientifico": "asthenosoma_varium",
+      "nombre_cientifico": "Asthenosoma_varium",
       "descripcion": "Erizo con espinas venenosas de colores vibrantes que causan quemaduras.",
       "toxicidad": "Moderada",
       "sintomas": "Dolor punzante inmediato e inflamación de los ganglios linfáticos.",
@@ -43,7 +43,7 @@
     "pk": 4,
     "fields": {
       "nombre_comun": "Araña de Sidney",
-      "nombre_cientifico": "atrax_robustus",
+      "nombre_cientifico": "Atrax_robustus",
       "descripcion": "Arácnido australiano agresivo que vive en madrigueras húmedas.",
       "toxicidad": "Alta",
       "sintomas": "Hipotensión, espasmos musculares y edema pulmonar.",
@@ -56,7 +56,7 @@
     "pk": 5,
     "fields": {
       "nombre_comun": "Escarabajo aceitero",
-      "nombre_cientifico": "berberomeloe_majalis",
+      "nombre_cientifico": "Berberomeloe_majalis",
       "descripcion": "Insecto que segrega cantaridina al sentirse amenazado.",
       "toxicidad": "Media",
       "sintomas": "Ampollas dolorosas en la piel e irritación gastrointestinal si se ingiere.",
@@ -69,7 +69,7 @@
     "pk": 6,
     "fields": {
       "nombre_comun": "Víbora de Gabón",
-      "nombre_cientifico": "bitis_gabonica",
+      "nombre_cientifico": "Bitis_gabonica",
       "descripcion": "Tiene los colmillos más largos de cualquier serpiente (hasta 5 cm).",
       "toxicidad": "Muy Alta",
       "sintomas": "Hipotensión severa, ampollas de sangre y shock hemorrágico.",
@@ -82,7 +82,7 @@
     "pk": 7,
     "fields": {
       "nombre_comun": "Krait común",
-      "nombre_cientifico": "bungarus_caeruleus",
+      "nombre_cientifico": "Bungarus_caeruleus",
       "descripcion": "Serpiente nocturna cuyo veneno es 16 veces más potente que el de una cobra.",
       "toxicidad": "Extrema",
       "sintomas": "Parálisis muscular indolora; la muerte ocurre por asfixia durante el sueño.",
@@ -95,7 +95,7 @@
     "pk": 8,
     "fields": {
       "nombre_comun": "Víbora de foseta de Malasia",
-      "nombre_cientifico": "calloselasma_rhodostoma",
+      "nombre_cientifico": "Calloselasma_rhodostoma",
       "descripcion": "Serpiente terrestre responsable de muchas mordeduras en el sudeste asiático.",
       "toxicidad": "Media-Alta",
       "sintomas": "Hinchazón severa y necrosis local que puede llevar a la amputación.",
@@ -108,7 +108,7 @@
     "pk": 9,
     "fields": {
       "nombre_comun": "Medusa Irukandji",
-      "nombre_cientifico": "carukia_barnesi",
+      "nombre_cientifico": "Carukia_barnesi",
       "descripcion": "Medusa diminuta pero extremadamente peligrosa de aguas australianas.",
       "toxicidad": "Extrema",
       "sintomas": "Síndrome Irukandji: calambres severos, vómitos y sensación de muerte inminente.",
@@ -121,7 +121,7 @@
     "pk": 10,
     "fields": {
       "nombre_comun": "Escorpión de corteza de Arizona",
-      "nombre_cientifico": "centruroides_sculpturatus",
+      "nombre_cientifico": "Centruroides_sculpturatus",
       "descripcion": "El escorpión más peligroso de Norteamérica.",
       "toxicidad": "Alta",
       "sintomas": "Movimientos oculares erráticos y dificultad respiratoria.",
@@ -134,7 +134,7 @@
     "pk": 11,
     "fields": {
       "nombre_comun": "Avispa de mar",
-      "nombre_cientifico": "chironex_fleckeri",
+      "nombre_cientifico": "Chironex_fleckeri",
       "descripcion": "Considerada la medusa más letal del mundo, posee tentáculos de hasta 3 metros.",
       "toxicidad": "Extrema",
       "sintomas": "Dolor insoportable, parálisis respiratoria y paro cardíaco en pocos minutos.",
@@ -147,7 +147,7 @@
     "pk": 12,
     "fields": {
       "nombre_comun": "Caracol cono",
-      "nombre_cientifico": "conus_geographus",
+      "nombre_cientifico": "Conus_geographus",
       "descripcion": "Molusco marino con un dardo venenoso capaz de atravesar trajes de neopreno.",
       "toxicidad": "Muy Alta",
       "sintomas": "Entumecimiento, mareo y parálisis muscular respiratoria.",
@@ -160,7 +160,7 @@
     "pk": 13,
     "fields": {
       "nombre_comun": "Serpiente de cascabel diamantina",
-      "nombre_cientifico": "crotalus_adamanteus",
+      "nombre_cientifico": "Crotalus_adamanteus",
       "descripcion": "La serpiente venenosa más pesada de América del Norte.",
       "toxicidad": "Alta",
       "sintomas": "Hemorragia interna, dolor intenso y daño tisular masivo.",
@@ -173,7 +173,7 @@
     "pk": 14,
     "fields": {
       "nombre_comun": "Víbora de Russell",
-      "nombre_cientifico": "daboia_russelii",
+      "nombre_cientifico": "Daboia_russelii",
       "descripcion": "Responsable de miles de muertes anuales en Asia debido de su agresividad.",
       "toxicidad": "Muy Alta",
       "sintomas": "Hemorragia de encías, orina con sangre y fallo renal agudo.",
@@ -186,7 +186,7 @@
     "pk": 15,
     "fields": {
       "nombre_comun": "Raya de aguijón común",
-      "nombre_cientifico": "dasyatis_pastinaca",
+      "nombre_cientifico": "Dasyatis_pastinaca",
       "descripcion": "Posee un aguijón serrado en la base de la cola con glándulas venenosas.",
       "toxicidad": "Media",
       "sintomas": "Dolor agudo, desmayos y riesgo de infección por restos de espina.",
@@ -199,7 +199,7 @@
     "pk": 16,
     "fields": {
       "nombre_comun": "Rana flecha azul",
-      "nombre_cientifico": "dendrobates_tinctorius",
+      "nombre_cientifico": "Dendrobates_tinctorius",
       "descripcion": "Anfibio de color azul metálico con manchas negras.",
       "toxicidad": "Moderada",
       "sintomas": "Irritación de mucosas y parálisis leve en pequeños depredadores.",
@@ -212,7 +212,7 @@
     "pk": 17,
     "fields": {
       "nombre_comun": "Mamba negra",
-      "nombre_cientifico": "dendroaspis_polylepis",
+      "nombre_cientifico": "Dendroaspis_polylepis",
       "descripcion": "Serpiente africana rápida y agresiva con boca de color negro azabache.",
       "toxicidad": "Alta",
       "sintomas": "Sabor metálico, visión doble y parálisis rápida del sistema nervioso.",
@@ -225,7 +225,7 @@
     "pk": 18,
     "fields": {
       "nombre_comun": "Serpiente marina de hocico ganchudo",
-      "nombre_cientifico": "enhydrina_schistosa",
+      "nombre_cientifico": "Enhydrina_schistosa",
       "descripcion": "Responsable de la mayoría de las muertes por mordedura de serpiente marina.",
       "toxicidad": "Muy Alta",
       "sintomas": "Dolor muscular severo y orina de color marrón (mioglobinuria).",
@@ -238,7 +238,7 @@
     "pk": 19,
     "fields": {
       "nombre_comun": "Araña de embudo de los árboles",
-      "nombre_cientifico": "hadronyche_formidabilis",
+      "nombre_cientifico": "Hadronyche_formidabilis",
       "descripcion": "Pariente de la Sidney pero habita en árboles; veneno muy potente.",
       "toxicidad": "Alta",
       "sintomas": "Vómitos, salivación excesiva y edema cerebral.",
@@ -251,7 +251,7 @@
     "pk": 20,
     "fields": {
       "nombre_comun": "Pulpo de anillos azules",
-      "nombre_cientifico": "hapalochlaena_maculosa",
+      "nombre_cientifico": "Hapalochlaena_maculosa",
       "descripcion": "Pequeño cefalópodo con anillos azules brillantes que aparecen cuando se siente amenazado.",
       "toxicidad": "Muy Alta",
       "sintomas": "Náuseas, pérdida de visión, parálisis muscular y asfixia por fallo respiratorio.",
@@ -264,7 +264,7 @@
     "pk": 21,
     "fields": {
       "nombre_comun": "Monstruo de Gila",
-      "nombre_cientifico": "heloderma_suspectum",
+      "nombre_cientifico": "Heloderma_suspectum",
       "descripcion": "Lagarto pesado de movimientos lentos con glándulas venenosas en la mandíbula inferior.",
       "toxicidad": "Moderada",
       "sintomas": "Dolor intenso, hemorragia local y debilidad generalizada.",
@@ -277,7 +277,7 @@
     "pk": 22,
     "fields": {
       "nombre_comun": "Viuda negra",
-      "nombre_cientifico": "latrodectus_mactans",
+      "nombre_cientifico": "Latrodectus_mactans",
       "descripcion": "Araña negra con una marca de reloj de arena rojo en el abdomen.",
       "toxicidad": "Moderada-Alta",
       "sintomas": "Latrodectismo: dolores abdominales similares a una apendicitis y sudoración.",
@@ -290,7 +290,7 @@
     "pk": 23,
     "fields": {
       "nombre_comun": "Escorpión de muerte acechante",
-      "nombre_cientifico": "leiurus_quinquestriatus",
+      "nombre_cientifico": "Leiurus_quinquestriatus",
       "descripcion": "Escorpión pequeño de color amarillento con un veneno altamente potente.",
       "toxicidad": "Muy Alta",
       "sintomas": "Edema pulmonar y pancreatitis; es letal para niños y ancianos.",
@@ -303,7 +303,7 @@
     "pk": 24,
     "fields": {
       "nombre_comun": "Oruga de seda asesina",
-      "nombre_cientifico": "lonomia_obliqua",
+      "nombre_cientifico": "Lonomia_obliqua",
       "descripcion": "Larva de polilla sudamericana con pelos venenosos altamente tóxicos.",
       "toxicidad": "Alta",
       "sintomas": "Síndrome hemorrágico generalizado e insuficiencia renal.",
@@ -316,7 +316,7 @@
     "pk": 25,
     "fields": {
       "nombre_comun": "Araña de rincón",
-      "nombre_cientifico": "loxosceles_laeta",
+      "nombre_cientifico": "Loxosceles_laeta",
       "descripcion": "Araña con veneno necrótico que destruye los tejidos.",
       "toxicidad": "Alta",
       "sintomas": "Loxoscelismo: úlceras necróticas y en casos graves, fallo renal.",
@@ -329,7 +329,7 @@
     "pk": 26,
     "fields": {
       "nombre_comun": "Serpiente coral oriental",
-      "nombre_cientifico": "micrurus_fulvius",
+      "nombre_cientifico": "Micrurus_fulvius",
       "descripcion": "Serpiente de colores brillantes (rojo, amarillo y negro) nativa de EE.UU.",
       "toxicidad": "Alta",
       "sintomas": "Dificultad para tragar, debilidad muscular y fallo respiratorio tardío.",
@@ -342,7 +342,7 @@
     "pk": 27,
     "fields": {
       "nombre_comun": "Cobra de anteojos",
-      "nombre_cientifico": "naja_naja",
+      "nombre_cientifico": "Naja_naja",
       "descripcion": "Famosa serpiente de la India con un dibujo de 'gafas' en su capucha.",
       "toxicidad": "Alta",
       "sintomas": "Parálisis de los nervios craneales y fallo respiratorio.",
@@ -355,7 +355,7 @@
     "pk": 28,
     "fields": {
       "nombre_comun": "Cobra escupidora de cuello negro",
-      "nombre_cientifico": "naja_nigricollis",
+      "nombre_cientifico": "Naja_nigricollis",
       "descripcion": "Puede proyectar su veneno a los ojos del agresor hasta a 3 metros.",
       "toxicidad": "Alta",
       "sintomas": "Ceguera temporal o permanente si el veneno toca los ojos.",
@@ -368,7 +368,7 @@
     "pk": 29,
     "fields": {
       "nombre_comun": "Serpiente tigre",
-      "nombre_cientifico": "notechis_scutatus",
+      "nombre_cientifico": "Notechis_scutatus",
       "descripcion": "Serpiente australiana con bandas oscuras similares a las de un tigre.",
       "toxicidad": "Alta",
       "sintomas": "Dolor en cuello y pies, sudoración y parálisis.",
@@ -381,7 +381,7 @@
     "pk": 30,
     "fields": {
       "nombre_comun": "Loris perezoso",
-      "nombre_cientifico": "nycticebus_coucang",
+      "nombre_cientifico": "Nycticebus_coucang",
       "descripcion": "Único primate venenoso; secreta toxinas en sus codos que mezcla con saliva.",
       "toxicidad": "Media",
       "sintomas": "Shock anafiláctico en humanos y necrosis de la herida.",
@@ -394,7 +394,7 @@
     "pk": 31,
     "fields": {
       "nombre_comun": "Cobra real",
-      "nombre_cientifico": "ophiophagus_hannah",
+      "nombre_cientifico": "Ophiophagus_hannah",
       "descripcion": "La serpiente venenosa más larga del mundo, se alimenta de otras serpientes.",
       "toxicidad": "Alta",
       "sintomas": "Fallo neurotóxico, colapso cardiovascular y dificultad respiratoria.",
@@ -407,7 +407,7 @@
     "pk": 32,
     "fields": {
       "nombre_comun": "Ornitorrinco",
-      "nombre_cientifico": "ornithorhynchus_anatinus",
+      "nombre_cientifico": "Ornithorhynchus_anatinus",
       "descripcion": "Los machos tienen espolones en las patas traseras que inyectan veneno.",
       "toxicidad": "Moderada",
       "sintomas": "Dolor incapacitante que no responde a la morfina e inflamación.",
@@ -420,7 +420,7 @@
     "pk": 33,
     "fields": {
       "nombre_comun": "Serpiente Taipán del interior",
-      "nombre_cientifico": "oxyuranus_microlepidotus",
+      "nombre_cientifico": "Oxyuranus_microlepidotus",
       "descripcion": "La serpiente terrestre más venenosa del planeta, originaria de Australia.",
       "toxicidad": "Máxima",
       "sintomas": "Coagulación de la sangre, parálisis muscular y daño renal severo.",
@@ -433,7 +433,7 @@
     "pk": 34,
     "fields": {
       "nombre_comun": "Hormiga bala",
-      "nombre_cientifico": "paraponera_clavata",
+      "nombre_cientifico": "Paraponera_clavata",
       "descripcion": "Famosa por tener la picadura más dolorosa según el índice Schmidt.",
       "toxicidad": "Baja-Media",
       "sintomas": "Dolor comparable al de un disparo, temblores y parálisis temporal.",
@@ -446,7 +446,7 @@
     "pk": 35,
     "fields": {
       "nombre_comun": "Araña errante brasileña",
-      "nombre_cientifico": "phoneutria_nigriventer",
+      "nombre_cientifico": "Phoneutria_nigriventer",
       "descripcion": "También llamada araña del banano, es muy activa y agresiva.",
       "toxicidad": "Alta",
       "sintomas": "Dolor intenso, taquicardia y en hombres, priapismo doloroso.",
@@ -459,7 +459,7 @@
     "pk": 36,
     "fields": {
       "nombre_comun": "Rana dardo dorada",
-      "nombre_cientifico": "phyllobates_terribilis",
+      "nombre_cientifico": "Phyllobates_terribilis",
       "descripcion": "Anfibio de color brillante cuya piel segrega batracotoxina.",
       "toxicidad": "Extrema",
       "sintomas": "Fallo cardíaco y arritmias debido al bloqueo de canales de sodio.",
@@ -472,7 +472,7 @@
     "pk": 37,
     "fields": {
       "nombre_comun": "Rana mono encerada",
-      "nombre_cientifico": "phyllomedusa_sauvagii",
+      "nombre_cientifico": "Phyllomedusa_sauvagii",
       "descripcion": "Produce secreciones que contienen péptidos opioides y dermorfina.",
       "toxicidad": "Media",
       "sintomas": "Vómitos, taquicardia y cambios extremos en la presión arterial.",
@@ -485,7 +485,7 @@
     "pk": 38,
     "fields": {
       "nombre_comun": "Carabela portuguesa",
-      "nombre_cientifico": "physalia_physalis",
+      "nombre_cientifico": "Physalia_physalis",
       "descripcion": "Organismo colonial que flota en la superficie con tentáculos urticantes.",
       "toxicidad": "Moderada-Alta",
       "sintomas": "Latigazos cutáneos rojos y dolorosos, fiebre y náuseas.",
@@ -498,7 +498,7 @@
     "pk": 39,
     "fields": {
       "nombre_comun": "Pitohui encapuchado",
-      "nombre_cientifico": "pitohui_dichrous",
+      "nombre_cientifico": "Pitohui_dichrous",
       "descripcion": "Una de las pocas aves venenosas conocidas; su piel y plumas contienen batracotoxina.",
       "toxicidad": "Baja",
       "sintomas": "Adormecimiento y ardor al tocar el animal.",
@@ -511,7 +511,7 @@
     "pk": 40,
     "fields": {
       "nombre_comun": "Pez león",
-      "nombre_cientifico": "pterois_volitans",
+      "nombre_cientifico": "Pterois_volitans",
       "descripcion": "Especie invasora con largas espinas venenosas en las aletas.",
       "toxicidad": "Media",
       "sintomas": "Náuseas, fiebre y dolor local extremo que puede durar días.",
@@ -524,7 +524,7 @@
     "pk": 41,
     "fields": {
       "nombre_comun": "Salamandra de fuego",
-      "nombre_cientifico": "salamandra_salamandra",
+      "nombre_cientifico": "Salamandra_salamandra",
       "descripcion": "Anfibio que expulsa samandrina a través de glándulas cutáneas.",
       "toxicidad": "Media",
       "sintomas": "Irritación severa de mucosas y en animales pequeños, convulsiones.",
@@ -537,7 +537,7 @@
     "pk": 42,
     "fields": {
       "nombre_comun": "Escolopendra",
-      "nombre_cientifico": "scolopendra_cingulata",
+      "nombre_cientifico": "Scolopendra_cingulata",
       "descripcion": "Ciempiés de gran tamaño con anillos oscuros.",
       "toxicidad": "Media",
       "sintomas": "Picadura muy dolorosa, inflamación, a veces mareos.",
@@ -550,7 +550,7 @@
     "pk": 43,
     "fields": {
       "nombre_comun": "Scolopendra gigante",
-      "nombre_cientifico": "scolopendra_gigantea",
+      "nombre_cientifico": "Scolopendra_gigantea",
       "descripcion": "Ciempiés de hasta 30 cm que puede cazar murciélagos y lagartos.",
       "toxicidad": "Media",
       "sintomas": "Fiebre, debilidad y dolor intenso en el sitio de la mordedura.",
@@ -563,7 +563,7 @@
     "pk": 44,
     "fields": {
       "nombre_comun": "Falsa viuda negra",
-      "nombre_cientifico": "steatoda_nobilis",
+      "nombre_cientifico": "Steatoda_nobilis",
       "descripcion": "Araña que se confunde frecuentemente con la viuda negra verdadera.",
       "toxicidad": "Baja",
       "sintomas": "Dolor similar a la picadura de una avispa e inflamación.",
@@ -576,7 +576,7 @@
     "pk": 45,
     "fields": {
       "nombre_comun": "Pez piedra",
-      "nombre_cientifico": "synanceia_horrida",
+      "nombre_cientifico": "Synanceia_horrida",
       "descripcion": "Pez que se camufla en el lecho marino y posee espinas dorsales venenosas.",
       "toxicidad": "Muy Alta",
       "sintomas": "Dolor agudo, necrosis tisular, shock y posible muerte si no se trata.",
@@ -589,7 +589,7 @@
     "pk": 46,
     "fields": {
       "nombre_comun": "Pez globo",
-      "nombre_cientifico": "takifugu_rubripes",
+      "nombre_cientifico": "Takifugu_rubripes",
       "descripcion": "Contiene tetradotoxina en sus órganos internos como mecanismo de defensa.",
       "toxicidad": "Muy Alta",
       "sintomas": "Adormecimiento de labios y lengua seguidos de parálisis total consciente.",
@@ -602,7 +602,7 @@
     "pk": 47,
     "fields": {
       "nombre_comun": "Dragón de Komodo",
-      "nombre_cientifico": "varanus_komodoensis",
+      "nombre_cientifico": "Varanus_komodoensis",
       "descripcion": "El lagarto más grande del mundo; posee glándulas de veneno anticoagulante.",
       "toxicidad": "Alta",
       "sintomas": "Bajada drástica de la presión arterial y sangrado incontrolado.",
@@ -615,7 +615,7 @@
     "pk": 48,
     "fields": {
       "nombre_comun": "Avispón gigante asiático",
-      "nombre_cientifico": "vespa_mandarinia",
+      "nombre_cientifico": "Vespa_mandarinia",
       "descripcion": "El avispón más grande del mundo, con un aguijón de 6 mm.",
       "toxicidad": "Media-Alta",
       "sintomas": "Fallo multiorgánico si se reciben múltiples picaduras.",
@@ -628,7 +628,7 @@
     "pk": 49,
     "fields": {
       "nombre_comun": "Víbora Hocicuda",
-      "nombre_cientifico": "vipera_latastei",
+      "nombre_cientifico": "Vipera_latastei",
       "descripcion": "Víbora grisácea con un característico cuerno en el hocico.",
       "toxicidad": "Alta",
       "sintomas": "Dolor local intenso, edema que progresa, posibles náuseas.",
