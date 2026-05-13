@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "nombre_comun": "Víbora Hocicuda",
-      "nombre_cientifico": "Vipera latastei",
+      "nombre_cientifico": "vipera_latastei",
       "descripcion": "Víbora grisácea con un característico cuerno en el hocico.",
       "toxicidad": "Alta",
       "sintomas": "Dolor local intenso, edema que progresa, posibles náuseas.",
@@ -17,7 +17,7 @@
     "pk": 2,
     "fields": {
       "nombre_comun": "Escolopendra",
-      "nombre_cientifico": "Scolopendra cingulata",
+      "nombre_cientifico": "scolopendra_cingulata",
       "descripcion": "Ciempiés de gran tamaño con anillos oscuros.",
       "toxicidad": "Media",
       "sintomas": "Picadura muy dolorosa, inflamación, a veces mareos.",
