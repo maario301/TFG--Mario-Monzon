@@ -29,8 +29,18 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         holder.txtCientifico.text = animal.nombre_cientifico
         holder.txtToxicidad.text = "Toxicidad: ${animal.toxicidad}"
 
+        // Construimos la URL de forma segura para evitar el error de "nullable"
+        val baseUrl = "http://98.90.201.0:8000"
+
+        // Usamos ?.let y un elvis operator (?:) para manejar nulos
+        val fullImageUrl = animal.imagen_url?.let { url ->
+            if (url.startsWith("http")) url else baseUrl + url
+        } ?: "" // Si es nulo, enviamos una cadena vacía
+
         Glide.with(holder.itemView.context)
-            .load(animal.imagen_url)
+            .load(fullImageUrl)
+            .placeholder(android.R.drawable.ic_menu_gallery) // Icono mientras carga
+            .error(android.R.drawable.stat_notify_error)   // Icono si la URL falla
             .into(holder.imgAnimal)
     }
 

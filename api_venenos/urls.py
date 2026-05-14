@@ -1,13 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    # La ruta del panel de control que ya tienes
     path('admin/', admin.site.urls),
-
-    # Esta es la línea maestra para los animales
     path('api/', include('animales.urls')),
-
-    # AÑADE ESTA LÍNEA AQUÍ ABAJO:
     path('api-auth/', include('rest_framework.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # AÑADE ESTO
