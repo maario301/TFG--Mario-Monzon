@@ -40,6 +40,13 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    packaging {
+        jniLibs {
+            // Esto permite que las librerías de IA funcionen en dispositivos nuevos
+            useLegacyPackaging = true
+        }
+    }
 }
 
 // --- ESTE BLOQUE ES VITAL: Pégalo justo debajo del bloque android ---
@@ -52,6 +59,8 @@ configurations.all {
         // Si usas navegación, esto evita que pida el SDK 36
         force("androidx.navigation:navigation-fragment-ktx:2.7.7")
         force("androidx.navigation:navigation-ui-ktx:2.7.7")
+        force("androidx.activity:activity:1.8.0")
+        force("androidx.activity:activity-ktx:1.8.0")
     }
 }
 dependencies {
