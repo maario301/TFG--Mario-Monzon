@@ -46,7 +46,11 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         // 3. Construcción de URL y carga de imagen (IP de tu AWS)
         val baseUrl = "http://98.90.201.0:8000"
         val fullImageUrl = animal.imagen_url?.let { url ->
-            if (url.startsWith("http")) url else baseUrl + url
+            when {
+                url.startsWith("http") -> url
+                url.startsWith("/") -> baseUrl + url
+                else -> "$baseUrl/$url" // Añade la barra si falta
+            }
         } ?: ""
 
         Glide.with(holder.itemView.context)
