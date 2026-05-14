@@ -5,20 +5,23 @@ plugins {
 
 android {
     namespace = "com.example.appvenenos"
-    compileSdk = 34 // CAMBIA S34 por 35 (o 36 si te lo sigue pidiendo)
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.appvenenos"
         minSdk = 24
-        targetSdk = 34// CAMBIA 34 por 35 para que coincida
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    // Mantengo tu bloque intacto como pediste
     aaptOptions {
         noCompress("tflite")
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -28,12 +31,27 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
+    }
+}
+
+// --- ESTE BLOQUE ES VITAL: Pégalo justo debajo del bloque android ---
+// Es lo que engaña a las librerías que piden el SDK 36
+configurations.all {
+    resolutionStrategy {
+        force("androidx.core:core-ktx:1.12.0")
+        force("androidx.appcompat:appcompat:1.6.1")
+        force("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+        // Si usas navegación, esto evita que pida el SDK 36
+        force("androidx.navigation:navigation-fragment-ktx:2.7.7")
+        force("androidx.navigation:navigation-ui-ktx:2.7.7")
     }
 }
 
