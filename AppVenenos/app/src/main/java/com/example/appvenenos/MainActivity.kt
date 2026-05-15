@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, PaginaCamara::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_historial -> cambiarPagina(PaginaHistorial())
+                R.id.nav_camara -> cambiarPagina(PaginaCamara()) // Ahora que es Fragment
                 R.id.nav_mapa -> {
                     cambiarPagina(PaginaMapa()) // Ahora sí funcionará y mantendrá el menú
                 }

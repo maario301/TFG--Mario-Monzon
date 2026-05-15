@@ -1,38 +1,44 @@
 package com.example.appvenenos.paginas
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment // IMPORTANTE: Cambiado a Fragment
 import com.example.appvenenos.Classifier
 import com.example.appvenenos.MainActivity
 import com.example.appvenenos.R
-import android.content.Context
-class PaginaCamara : AppCompatActivity() {
+
+class PaginaCamara : Fragment() { // Hereda de Fragment
 
     private lateinit var classifier: Classifier
     private lateinit var imgPreview: ImageView
     private lateinit var txtResultado: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.pagina_camara) // Asegúrate de que este es el nombre de tu XML
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflamos el layout
+        val root = inflater.inflate(R.layout.pagina_camara, container, false)
 
-        // Inicializar la IA
-        classifier = Classifier(this)
+        // Inicializar la IA (usamos requireContext())
+        classifier = Classifier(requireContext())
 
-        // Enlazar con el XML (IDs de tu captura image_2ad91a.png)
-        imgPreview = findViewById(R.id.imgPreview)
-        txtResultado = findViewById(R.id.txtPrediction)
-        val btnGallery: Button = findViewById(R.id.btnGallery)
-        val btnCapture: Button = findViewById(R.id.btnCapture)
+        // Enlazar componentes usando 'root'
+        imgPreview = root.findViewById(R.id.imgPreview)
+        txtResultado = root.findViewById(R.id.txtPrediction)
+        val btnGallery: Button = root.findViewById(R.id.btnGallery)
+        val btnCapture: Button = root.findViewById(R.id.btnCapture)
 
         btnGallery.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
@@ -44,6 +50,8 @@ class PaginaCamara : AppCompatActivity() {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, 101)
         }
+
+        return root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -52,10 +60,10 @@ class PaginaCamara : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             var bitmap: Bitmap? = null
 
-            if (requestCode == 100) { // De la Galería
+            if (requestCode == 100) { // Galería
                 val uri: Uri? = data?.data
-                bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-            } else if (requestCode == 101) { // De la Cámara
+                bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+            } else if (requestCode == 101) { // Cámara
                 bitmap = data?.extras?.get("data") as Bitmap
             }
 
@@ -63,22 +71,18 @@ class PaginaCamara : AppCompatActivity() {
                 imgPreview.setImageBitmap(bitmap)
                 imgPreview.visibility = View.VISIBLE
 
-                // 1. La IA saca el nombre científico (con guion bajo)
                 val nombreAnimal = classifier.predict(bitmap)
                 txtResultado.text = "Detectado: $nombreAnimal"
 
-                // Dentro de onActivityResult, donde detectas el animal
                 if (nombreAnimal != "Otros") {
-                    // 1. Guardamos el nombre en las preferencias para que el Fragment lo lea al abrirse
-                    val prefs = getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
+                    val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
                     prefs.edit().putString("ultimo_animal", nombreAnimal).apply()
-                    finish() // Esto cierra la cámara y activa el onResume de la MainActivity
-                    // 2. Avisamos a la Activity principal que cambie a la pestaña de Historial
-                    // Asumiendo que tu Activity principal se llama MainActivity
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("ir_a_historial", true)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
+
+                    // Notificar a MainActivity que cambie a la pestaña Historial
+                    (activity as? MainActivity)?.let {
+                        it.cambiarPagina(PaginaHistorial())
+                        // Opcional: marcar icono historial en el navBar
+                    }
                 }
             }
         }
