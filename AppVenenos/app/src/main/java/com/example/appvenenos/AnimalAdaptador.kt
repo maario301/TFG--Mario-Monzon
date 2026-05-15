@@ -1,22 +1,24 @@
 package com.example.appvenenos
 
-import android.content.Intent // IMPORTANTE: Para el cambio de pantalla
+import android.os.Bundle // IMPORTANTE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button // IMPORTANTE: Para el botón
+import android.widget.Button // IMPORTANTE
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.appvenenos.paginas.PaginaMapa // IMPORTANTE: Ruta a tu pantalla de mapa
+import com.example.appvenenos.paginas.PaginaMapa
+import com.google.android.material.bottomnavigation.BottomNavigationView // IMPORTANTE
+import androidx.fragment.app.Fragment // IMPORTANTE
 
 class AnimalAdaptador(private val listaAnimales: List<Animal>) :
     RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
 
     class AnimalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgAnimal: ImageView = view.findViewById(R.id.imgAnimal)
-        val btnLocalizar: Button = view.findViewById(R.id.btnLocalizar) // Ya no dará error
+        val btnLocalizar: Button = view.findViewById(R.id.btnLocalizar)
         val txtNombre: TextView = view.findViewById(R.id.txtNombreComun)
         val txtCientifico: TextView = view.findViewById(R.id.txtNombreCientifico)
         val txtToxicidad: TextView = view.findViewById(R.id.txtToxicidad)
@@ -43,27 +45,38 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         holder.txtSintomas.text = "Síntomas: ${animal.sintomas ?: "No especificados"}"
         holder.txtTratamiento.text = "Tratamiento: ${animal.tratamiento ?: "Consulte a un médico"}"
 
-        // 2. Configurar botón de localización
+        // --- EL TERCER CÓDIGO VA AQUÍ ---
         holder.btnLocalizar.setOnClickListener {
-            val intent = Intent(context, PaginaMapa::class.java).apply {
-                putExtra("nombre", animal.nombre_comun)
-                putExtra("cientifico", animal.nombre_cientifico)
+            // Convertimos el contexto a MainActivity para usar sus funciones públicas
+            val activity = context as? MainActivity
+
+            // Creamos el "paquete" con los datos del animal
+            val bundle = Bundle().apply {
+                putString("nombre", animal.nombre_comun)
+                putString("cientifico", animal.nombre_cientifico)
             }
-            context.startActivity(intent)
+
+            // Creamos el Fragmento del mapa y le metemos los datos
+            val fragmentMapa = PaginaMapa().apply {
+                arguments = bundle
+            }
+
+            activity?.let {
+                // Cambiamos al fragmento del mapa (manteniendo el menú)
+                it.cambiarPagina(fragmentMapa)
+
+                // Marcamos visualmente el icono del mapa en la barra inferior
+                val navBar = it.findViewById<BottomNavigationView>(R.id.barra_navegacion)
+                navBar.selectedItemId = R.id.nav_mapa
+            }
         }
 
-        // 3. LÓGICA DE IMAGEN LOCAL (RECURSOS DRAWABLE)
+        // 3. Lógica de imagen local
         val nombreFotoLocal = animal.nombre_cientifico.lowercase()
-        val imageResId = context.resources.getIdentifier(
-            nombreFotoLocal,
-            "drawable",
-            context.packageName
-        )
+        val imageResId = context.resources.getIdentifier(nombreFotoLocal, "drawable", context.packageName)
 
         Glide.with(context)
             .load(if (imageResId != 0) imageResId else android.R.drawable.ic_menu_gallery)
-            .placeholder(android.R.drawable.ic_menu_gallery)
-            .error(android.R.drawable.stat_notify_error)
             .centerCrop()
             .into(holder.imgAnimal)
     }

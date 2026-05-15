@@ -32,9 +32,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_historial -> cambiarPagina(PaginaHistorial())
                 R.id.nav_mapa -> {
-                    // En lugar de cambiarPagina, lanzamos la Activity directamente
-                    val intent = Intent(this, PaginaMapa::class.java)
-                    startActivity(intent)
+                    cambiarPagina(PaginaMapa()) // Ahora sí funcionará y mantendrá el menú
                 }
             }
             true
@@ -72,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         checkIntent(intent)
     }
 
-    private fun cambiarPagina(pagina: Fragment) {
+    fun cambiarPagina(pagina: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.contenedor_paginas, pagina)
             .commit()
