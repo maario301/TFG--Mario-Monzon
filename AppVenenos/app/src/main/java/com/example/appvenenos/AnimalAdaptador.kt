@@ -11,14 +11,11 @@ import com.bumptech.glide.Glide
 class AnimalAdaptador(private val listaAnimales: List<Animal>) :
     RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
 
-    // 1. ViewHolder ampliado con todos los campos del XML
     class AnimalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgAnimal: ImageView = view.findViewById(R.id.imgAnimal)
         val txtNombre: TextView = view.findViewById(R.id.txtNombreComun)
         val txtCientifico: TextView = view.findViewById(R.id.txtNombreCientifico)
         val txtToxicidad: TextView = view.findViewById(R.id.txtToxicidad)
-
-        // Nuevos campos para la ficha completa
         val txtDescripcion: TextView = view.findViewById(R.id.txtDescripcion)
         val txtSintomas: TextView = view.findViewById(R.id.txtSintomas)
         val txtTratamiento: TextView = view.findViewById(R.id.txtTratamiento)
@@ -32,32 +29,34 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
 
     override fun onBindViewHolder(holder: AnimalViewHolder, position: Int) {
         val animal = listaAnimales[position]
+        val context = holder.itemView.context
 
-        // Rellenar textos básicos
+        // 1. Rellenar textos
         holder.txtNombre.text = animal.nombre_comun
         holder.txtCientifico.text = animal.nombre_cientifico
         holder.txtToxicidad.text = "Toxicidad: ${animal.toxicidad}"
-
-        // 2. Rellenar los nuevos atributos (usando ?: para evitar nulos)
         holder.txtDescripcion.text = animal.descripcion ?: "Sin descripción disponible"
         holder.txtSintomas.text = "Síntomas: ${animal.sintomas ?: "No especificados"}"
         holder.txtTratamiento.text = "Tratamiento: ${animal.tratamiento ?: "Consulte a un médico"}"
 
-        // 3. Construcción de URL y carga de imagen (IP de tu AWS)
-        val baseUrl = "http://98.90.201.0:8000"
-        val fullImageUrl = animal.imagen_url?.let { url ->
-            when {
-                url.startsWith("http") -> url
-                url.startsWith("/") -> baseUrl + url
-                else -> "$baseUrl/$url" // Añade la barra si falta
-            }
-        } ?: ""
+        // 2. LÓGICA DE IMAGEN LOCAL (RECURSOS DRAWABLE)
+        // Convertimos el nombre científico (ej: "Vipera_latastei") a minúsculas ("vipera_latastei")
+        // para que coincida con el nombre del archivo en la carpeta drawable.
+        val nombreFotoLocal = animal.nombre_cientifico.lowercase()
 
-        Glide.with(holder.itemView.context)
-            .load(fullImageUrl)
+        // Buscamos el ID numérico que Android le asigna a esa foto
+        val imageResId = context.resources.getIdentifier(
+            nombreFotoLocal,
+            "drawable",
+            context.packageName
+        )
+
+        // 3. Cargar la imagen con Glide
+        Glide.with(context)
+            .load(if (imageResId != 0) imageResId else android.R.drawable.ic_menu_gallery)
             .placeholder(android.R.drawable.ic_menu_gallery)
             .error(android.R.drawable.stat_notify_error)
-            .centerCrop() // Para que la imagen quede bien encuadrada
+            .centerCrop()
             .into(holder.imgAnimal)
     }
 
