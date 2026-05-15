@@ -54,7 +54,10 @@ class PaginaMapa : Fragment() {
         map.controller.setZoom(18.0)
         map.controller.setCenter(puntoAvistamiento)
 
-        if (nombreCientifico.isNotEmpty()) {
+        // 5. Crear el Marcador Personalizado
+        // IMPORTANTE: NO usamos map.overlays.clear() para que se mantengan los anteriores
+
+        if (nombreCientifico.isNotEmpty() && nombreCientifico != "Mapa General") {
             val marcador = Marker(map)
             marcador.position = puntoAvistamiento
             marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -66,22 +69,16 @@ class PaginaMapa : Fragment() {
             marcador.title = nombreComun
             marcador.snippet = "Avistado por: $usuarioLogueado\nFecha: $fechaActual"
 
-            // --- MEJORA DE ICONO ---
             val nombreFoto = nombreCientifico.lowercase().replace(" ", "_")
             val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
 
             if (resId != 0) {
                 val drawableOriginal = requireContext().getDrawable(resId)
-
-                // OPCIONAL: Escalar el icono si sale muy grande en el mapa
-                // val bitmap = (drawableOriginal as BitmapDrawable).bitmap
-                // val iconoRedimensionado = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 150, 150, true))
-                // marcador.icon = iconoRedimensionado
-
                 marcador.icon = drawableOriginal
-                marcador.image = drawableOriginal // Foto que sale al pulsar el marcador
+                marcador.image = drawableOriginal
             }
 
+            // Se añade a la lista existente sin borrar nada
             map.overlays.add(marcador)
         }
 
