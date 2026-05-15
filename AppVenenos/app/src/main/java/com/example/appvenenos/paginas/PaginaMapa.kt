@@ -33,6 +33,9 @@ class PaginaMapa : Fragment() {
         map = root.findViewById(R.id.mapview)
         map.setMultiTouchControls(true)
 
+        // Limpiar overlays antiguos por si acaso
+        map.overlays.clear()
+
         val nombreComun = arguments?.getString("nombre") ?: "Mapa General"
         val nombreCientifico = arguments?.getString("cientifico") ?: ""
 
@@ -40,20 +43,17 @@ class PaginaMapa : Fragment() {
         val lastLocation = try {
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        } catch (e: SecurityException) {
-            null
-        }
+        } catch (e: SecurityException) { null }
 
         val puntoAvistamiento = if (lastLocation != null) {
             GeoPoint(lastLocation.latitude, lastLocation.longitude)
         } else {
-            GeoPoint(40.4167, -3.7033) // Madrid por defecto
+            GeoPoint(40.4167, -3.7033)
         }
 
         map.controller.setZoom(18.0)
         map.controller.setCenter(puntoAvistamiento)
 
-        // 5. Crear el Marcador Personalizado
         if (nombreCientifico.isNotEmpty()) {
             val marcador = Marker(map)
             marcador.position = puntoAvistamiento
@@ -66,21 +66,26 @@ class PaginaMapa : Fragment() {
             marcador.title = nombreComun
             marcador.snippet = "Avistado por: $usuarioLogueado\nFecha: $fechaActual"
 
-            val nombreFoto = nombreCientifico.lowercase()
+            // --- MEJORA DE ICONO ---
+            val nombreFoto = nombreCientifico.lowercase().replace(" ", "_")
             val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
+
             if (resId != 0) {
                 val drawableOriginal = requireContext().getDrawable(resId)
+
+                // OPCIONAL: Escalar el icono si sale muy grande en el mapa
+                // val bitmap = (drawableOriginal as BitmapDrawable).bitmap
+                // val iconoRedimensionado = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 150, 150, true))
+                // marcador.icon = iconoRedimensionado
+
                 marcador.icon = drawableOriginal
-                marcador.image = drawableOriginal
+                marcador.image = drawableOriginal // Foto que sale al pulsar el marcador
             }
 
             map.overlays.add(marcador)
         }
 
         map.invalidate()
-        return root // <--- ESTO ES LO QUE TE FALTABA
+        return root
     }
-
-    override fun onResume() { super.onResume(); map.onResume() }
-    override fun onPause() { super.onPause(); map.onPause() }
 }

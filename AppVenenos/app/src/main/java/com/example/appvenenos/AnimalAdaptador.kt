@@ -51,9 +51,11 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
             val activity = context as? MainActivity
 
             // Creamos el "paquete" con los datos del animal
+            // Dentro del setOnClickListener en AnimalAdaptador.kt
             val bundle = Bundle().apply {
                 putString("nombre", animal.nombre_comun)
-                putString("cientifico", animal.nombre_cientifico)
+                // Limpiamos espacios y pasamos a minúsculas ya aquí para evitar errores
+                putString("cientifico", animal.nombre_cientifico.lowercase().trim())
             }
 
             // Creamos el Fragmento del mapa y le metemos los datos
