@@ -31,7 +31,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.nav_historial -> cambiarPagina(PaginaHistorial())
-                R.id.nav_mapa -> cambiarPagina(PaginaMapa())
+                R.id.nav_mapa -> {
+                    // En lugar de cambiarPagina, lanzamos la Activity directamente
+                    val intent = Intent(this, PaginaMapa::class.java)
+                    startActivity(intent)
+                }
             }
             true
         }

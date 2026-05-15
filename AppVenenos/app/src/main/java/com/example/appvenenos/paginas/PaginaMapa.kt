@@ -20,8 +20,7 @@ class PaginaMapa : AppCompatActivity() {
 
         // Configuración de OSMDroid
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-        setContentView(R.layout.activity_pagina_mapa)
-
+        setContentView(R.layout.pagina_mapa)
         map = findViewById(R.id.mapview)
         map.setMultiTouchControls(true)
 
