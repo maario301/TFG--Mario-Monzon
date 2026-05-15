@@ -1,18 +1,22 @@
 package com.example.appvenenos
 
+import android.content.Intent // IMPORTANTE: Para el cambio de pantalla
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button // IMPORTANTE: Para el botón
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.appvenenos.paginas.PaginaMapa // IMPORTANTE: Ruta a tu pantalla de mapa
 
 class AnimalAdaptador(private val listaAnimales: List<Animal>) :
     RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
 
     class AnimalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgAnimal: ImageView = view.findViewById(R.id.imgAnimal)
+        val btnLocalizar: Button = view.findViewById(R.id.btnLocalizar) // Ya no dará error
         val txtNombre: TextView = view.findViewById(R.id.txtNombreComun)
         val txtCientifico: TextView = view.findViewById(R.id.txtNombreCientifico)
         val txtToxicidad: TextView = view.findViewById(R.id.txtToxicidad)
@@ -39,19 +43,23 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         holder.txtSintomas.text = "Síntomas: ${animal.sintomas ?: "No especificados"}"
         holder.txtTratamiento.text = "Tratamiento: ${animal.tratamiento ?: "Consulte a un médico"}"
 
-        // 2. LÓGICA DE IMAGEN LOCAL (RECURSOS DRAWABLE)
-        // Convertimos el nombre científico (ej: "Vipera_latastei") a minúsculas ("vipera_latastei")
-        // para que coincida con el nombre del archivo en la carpeta drawable.
-        val nombreFotoLocal = animal.nombre_cientifico.lowercase()
+        // 2. Configurar botón de localización
+        holder.btnLocalizar.setOnClickListener {
+            val intent = Intent(context, PaginaMapa::class.java).apply {
+                putExtra("nombre", animal.nombre_comun)
+                putExtra("cientifico", animal.nombre_cientifico)
+            }
+            context.startActivity(intent)
+        }
 
-        // Buscamos el ID numérico que Android le asigna a esa foto
+        // 3. LÓGICA DE IMAGEN LOCAL (RECURSOS DRAWABLE)
+        val nombreFotoLocal = animal.nombre_cientifico.lowercase()
         val imageResId = context.resources.getIdentifier(
             nombreFotoLocal,
             "drawable",
             context.packageName
         )
 
-        // 3. Cargar la imagen con Glide
         Glide.with(context)
             .load(if (imageResId != 0) imageResId else android.R.drawable.ic_menu_gallery)
             .placeholder(android.R.drawable.ic_menu_gallery)
