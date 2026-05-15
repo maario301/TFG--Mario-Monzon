@@ -25,15 +25,9 @@ class MainActivity : AppCompatActivity() {
         navBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_inicio -> cambiarPagina(PaginaInicio())
-                R.id.nav_camara -> {
-                    // Lanzamos la actividad de la cámara
-                    val intent = Intent(this, PaginaCamara::class.java)
-                    startActivity(intent)
-                }
-                R.id.nav_camara -> cambiarPagina(PaginaCamara()) // Ahora que es Fragment
-                R.id.nav_mapa -> {
-                    cambiarPagina(PaginaMapa()) // Ahora sí funcionará y mantendrá el menú
-                }
+                R.id.nav_camara -> cambiarPagina(PaginaCamara()) // ¡Ya no dará error!
+                R.id.nav_historial -> cambiarPagina(PaginaHistorial())
+                R.id.nav_mapa -> cambiarPagina(PaginaMapa())
             }
             true
         }
