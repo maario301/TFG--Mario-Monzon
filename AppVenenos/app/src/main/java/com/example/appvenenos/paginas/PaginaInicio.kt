@@ -44,16 +44,31 @@ class PaginaInicio : Fragment() {
         txtConsejo.text = listaConsejos.random()
 
         // --- BLOQUE 3: TARJETAS INTERACTIVAS (FLIP CARDS) ---
-        val container = root.findViewById<FrameLayout>(R.id.containerSerpiente)
-        val front = root.findViewById<CardView>(R.id.cardFrontSerpiente)
-        val back = root.findViewById<CardView>(R.id.cardBackSerpiente)
 
-        // AJUSTE: Aplicamos la distancia de cámara por código para evitar el error del XML
-        val distance = 8000
+        // Configuración común de cámara 3D
         val scale = resources.displayMetrics.density
-        container.cameraDistance = distance * scale
+        val cameraDist = 8000 * scale
 
-        setupFlipCard(container, front, back)
+        // 1. Tarjeta de SERPIENTES
+        val containerSerpiente = root.findViewById<FrameLayout>(R.id.containerSerpiente)
+        val frontSerpiente = root.findViewById<CardView>(R.id.cardFrontSerpiente)
+        val backSerpiente = root.findViewById<CardView>(R.id.cardBackSerpiente)
+        containerSerpiente.cameraDistance = cameraDist
+        setupFlipCard(containerSerpiente, frontSerpiente, backSerpiente)
+
+        // 2. Tarjeta de ARAÑAS
+        val containerArana = root.findViewById<FrameLayout>(R.id.containerArana)
+        val frontArana = root.findViewById<CardView>(R.id.cardFrontArana)
+        val backArana = root.findViewById<CardView>(R.id.cardBackArana)
+        containerArana.cameraDistance = cameraDist
+        setupFlipCard(containerArana, frontArana, backArana)
+
+        // 3. Tarjeta de AVISPAS/ABEJAS
+        val containerAvispa = root.findViewById<FrameLayout>(R.id.containerAvispa)
+        val frontAvispa = root.findViewById<CardView>(R.id.cardFrontAvispa)
+        val backAvispa = root.findViewById<CardView>(R.id.cardBackAvispa)
+        containerAvispa.cameraDistance = cameraDist
+        setupFlipCard(containerAvispa, frontAvispa, backAvispa)
 
         return root
     }
@@ -61,7 +76,6 @@ class PaginaInicio : Fragment() {
     private fun setupFlipCard(container: View, front: View, back: View) {
         var isFrontVisible = true
 
-        // Cargamos los animadores de res/animator
         val flipOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_out) as AnimatorSet
         val flipIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_in) as AnimatorSet
 
