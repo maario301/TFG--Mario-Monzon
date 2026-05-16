@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="15dp"
+    app:cardBackgroundColor="#FFFFFF"
+    android:alpha="0"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/txtTituloBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Primeros Auxilios"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txtPasosBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1. Calma\n2. Inmovilizar\n3. Llamar 112"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="#666666" />
+</LinearLayout>
+</androidx.cardview.widget.CardView>

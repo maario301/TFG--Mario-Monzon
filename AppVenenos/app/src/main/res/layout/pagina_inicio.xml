@@ -40,142 +40,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="18dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Consejo de Prevención"
+                    android:text="💡 Recomendaciones de Seguridad"
                     android:textColor="#1976D2"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/txtConsejoCuerpo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cargando..."
-                    android:textColor="#555555"
-                    android:layout_marginTop="5dp" />
+                    android:text="Cargando consejos técnicos..."
+                    android:textColor="#444444"
+                    android:textSize="15sp"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Primeros Auxilios Rápidos"
+            android:text="Guía de Primeros Auxilios"
             android:textStyle="bold"
-            android:layout_marginBottom="10dp" />
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
 
-        <FrameLayout
-            android:id="@+id/containerSerpiente"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"> <androidx.cardview.widget.CardView
-            android:id="@+id/cardBackSerpiente"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="15dp"
-            app:cardBackgroundColor="#FFF3E0"
-            android:alpha="0">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="SERPIENTES:\n1. Inmovilizar.\n2. NO succionar.\n3. Quitar joyas."
-                android:gravity="center"
-                android:padding="15dp"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="#E65100"/>
-        </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardFrontSerpiente"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#43A047">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="SÍNTOMAS DE MORDEDURA\n(Toca para ver consejos)"
-                    android:textColor="#FFFFFF"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:padding="10dp" />
+        <FrameLayout android:id="@+id/containerSerpiente" android:layout_width="match_parent" android:layout_height="200dp" android:layout_marginBottom="16dp">
+            <include layout="@layout/item_card_back" android:id="@+id/layoutBackSerpiente" />
+            <androidx.cardview.widget.CardView android:id="@+id/cardFrontSerpiente" android:layout_width="match_parent" android:layout_height="match_parent" app:cardCornerRadius="15dp">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:id="@+id/imgSerpiente" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/serpiente" />
+                    <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="#66000000" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OFIDIOS\n(Serpientes)" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="22sp" android:layout_centerInParent="true" android:gravity="center"/>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/containerArana"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginTop="15dp">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardBackArana"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#E1F5FE"
-                android:alpha="0">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="ARÁCNIDOS:\n1. Lavar con agua y jabón.\n2. Aplicar frío local.\n3. No succionar ni cortar."
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="#0288D1" />
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardFrontArana"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#03A9F4">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="PICASURAS DE ARAÑA\nO ESCORPIÓN"
-                    android:textColor="#FFFFFF"
-                    android:gravity="center"
-                    android:textStyle="bold" />
+        <FrameLayout android:id="@+id/containerArana" android:layout_width="match_parent" android:layout_height="200dp" android:layout_marginBottom="16dp">
+            <include layout="@layout/item_card_back" android:id="@+id/layoutBackArana" />
+            <androidx.cardview.widget.CardView android:id="@+id/cardFrontArana" android:layout_width="match_parent" android:layout_height="match_parent" app:cardCornerRadius="15dp">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:id="@+id/imgArana" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/arana" />
+                    <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="#66000000" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ARÁCNIDOS\n(Arañas y Escorpiones)" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="22sp" android:layout_centerInParent="true" android:gravity="center"/>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/containerAvispa"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="20dp">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardBackAvispa"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#FFFDE7"
-                android:alpha="0">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="INSECTOS:\n1. Retirar aguijón (raspando).\n2. Lavar zona.\n3. Vigilar alergias (112)."
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="#FBC02D" />
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardFrontAvispa"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#FDD835">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="PICADURAS DE AVISPA\nO ABEJA"
-                    android:textColor="#333333"
-                    android:gravity="center"
-                    android:textStyle="bold" />
+        <FrameLayout android:id="@+id/containerAvispa" android:layout_width="match_parent" android:layout_height="200dp" android:layout_marginBottom="20dp">
+            <include layout="@layout/item_card_back" android:id="@+id/layoutBackAvispa" />
+            <androidx.cardview.widget.CardView android:id="@+id/cardFrontAvispa" android:layout_width="match_parent" android:layout_height="match_parent" app:cardCornerRadius="15dp">
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:id="@+id/imgAvispa" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/abeja" />
+                    <View android:layout_width="match_parent" android:layout_height="match_parent" android:background="#66000000" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="HIMENÓPTEROS\n(Abejas y Avispas)" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="22sp" android:layout_centerInParent="true" android:gravity="center"/>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 

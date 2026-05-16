@@ -34,39 +34,54 @@ class PaginaInicio : Fragment() {
                 .show()
         }
 
-        // --- BLOQUE 2: CONSEJOS ---
+        // --- BLOQUE 2: CONSEJOS DE PREVENCIÓN EXTENSOS ---
         val txtConsejo: TextView = root.findViewById(R.id.txtConsejoCuerpo)
         val listaConsejos = listOf(
-            "Mantén la calma y aléjate lentamente si avistas una especie peligrosa.",
-            "Usa botas altas y pantalones largos en zonas de vegetación densa.",
-            "No metas las manos en grietas sin revisar primero."
+            "• EQUIPAMIENTO TÉCNICO: En tus salidas, utiliza calzado de caña alta (botas) y pantalones largos de tejido resistente. El 70% de las mordeduras de ofidios ocurren por pisadas accidentales en zonas de vegetación.",
+            "• PROTOCOLO DE INSPECCIÓN: Jamás introduzcas las manos en grietas rocosas, troncos huecos o bajo piedras grandes sin inspeccionar previamente con un bastón. Muchos arácnidos utilizan estos lugares como refugio.",
+            "• DISTANCIA CRÍTICA: Si avistas una serpiente, mantén una distancia mínima de 3 metros. No intentes capturarla; el animal solo atacará si se siente acorralado. Retrocede lentamente sin movimientos bruscos.",
+            "• HIGIENE EN ACAMPADA: Mantén el perímetro de tu tienda libre de restos orgánicos. Los residuos atraen roedores, los cuales son la principal fuente de alimento de los depredadores venenosos.",
+            "• RECONOCIMIENTO VISUAL: Aprende a identificar las especies locales. Las víboras suelen tener pupilas verticales y cabeza triangular, mientras que las culebras tienen pupilas redondas."
         )
         txtConsejo.text = listaConsejos.random()
 
         // --- BLOQUE 3: TARJETAS INTERACTIVAS (FLIP CARDS) ---
-
-        // Configuración común de cámara 3D
         val scale = resources.displayMetrics.density
         val cameraDist = 8000 * scale
 
         // 1. Tarjeta de SERPIENTES
         val containerSerpiente = root.findViewById<FrameLayout>(R.id.containerSerpiente)
         val frontSerpiente = root.findViewById<CardView>(R.id.cardFrontSerpiente)
-        val backSerpiente = root.findViewById<CardView>(R.id.cardBackSerpiente)
+        val backSerpiente = root.findViewById<View>(R.id.layoutBackSerpiente)
+
+        // Personalizar cara trasera Serpiente
+        backSerpiente.findViewById<TextView>(R.id.txtTituloBack).text = "AUXILIO: SERPIENTES"
+        backSerpiente.findViewById<TextView>(R.id.txtPasosBack).text = "1. Mantener calma e inmovilizar.\n2. NO succionar ni cortar.\n3. Quitar joyas/reloj.\n4. Traslado urgente al hospital."
+
         containerSerpiente.cameraDistance = cameraDist
         setupFlipCard(containerSerpiente, frontSerpiente, backSerpiente)
 
         // 2. Tarjeta de ARAÑAS
         val containerArana = root.findViewById<FrameLayout>(R.id.containerArana)
         val frontArana = root.findViewById<CardView>(R.id.cardFrontArana)
-        val backArana = root.findViewById<CardView>(R.id.cardBackArana)
+        val backArana = root.findViewById<View>(R.id.layoutBackArana)
+
+        // Personalizar cara trasera Araña
+        backArana.findViewById<TextView>(R.id.txtTituloBack).text = "AUXILIO: ARÁCNIDOS"
+        backArana.findViewById<TextView>(R.id.txtPasosBack).text = "1. Lavar con agua y jabón.\n2. Aplicar frío local (hielo).\n3. Mantener zona elevada.\n4. Acudir a médico si hay mareo."
+
         containerArana.cameraDistance = cameraDist
         setupFlipCard(containerArana, frontArana, backArana)
 
         // 3. Tarjeta de AVISPAS/ABEJAS
         val containerAvispa = root.findViewById<FrameLayout>(R.id.containerAvispa)
         val frontAvispa = root.findViewById<CardView>(R.id.cardFrontAvispa)
-        val backAvispa = root.findViewById<CardView>(R.id.cardBackAvispa)
+        val backAvispa = root.findViewById<View>(R.id.layoutBackAvispa)
+
+        // Personalizar cara trasera Avispa
+        backAvispa.findViewById<TextView>(R.id.txtTituloBack).text = "AUXILIO: INSECTOS"
+        backAvispa.findViewById<TextView>(R.id.txtPasosBack).text = "1. Retirar aguijón (raspando).\n2. Lavar con agua y jabón.\n3. Aplicar amoníaco o frío.\n4. Si hay ahogo, llamar 112."
+
         containerAvispa.cameraDistance = cameraDist
         setupFlipCard(containerAvispa, frontAvispa, backAvispa)
 
