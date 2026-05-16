@@ -1,17 +1,17 @@
 package com.example.appvenenos
 
-import android.os.Bundle // IMPORTANTE
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button // IMPORTANTE
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.appvenenos.paginas.PaginaMapa
-import com.google.android.material.bottomnavigation.BottomNavigationView // IMPORTANTE
-import androidx.fragment.app.Fragment // IMPORTANTE
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
 
 class AnimalAdaptador(private val listaAnimales: List<Animal>) :
     RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
@@ -37,7 +37,7 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         val animal = listaAnimales[position]
         val context = holder.itemView.context
 
-        // 1. Rellenar textos
+        // 1. Rellenar los campos de texto con los datos del servidor
         holder.txtNombre.text = animal.nombre_comun
         holder.txtCientifico.text = animal.nombre_cientifico
         holder.txtToxicidad.text = "Toxicidad: ${animal.toxicidad}"
@@ -45,36 +45,41 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         holder.txtSintomas.text = "Síntomas: ${animal.sintomas ?: "No especificados"}"
         holder.txtTratamiento.text = "Tratamiento: ${animal.tratamiento ?: "Consulte a un médico"}"
 
-        // --- EL TERCER CÓDIGO VA AQUÍ ---
+        // 2. Lógica del botón Localizar (Enviar datos al Mapa)
         holder.btnLocalizar.setOnClickListener {
-            // Convertimos el contexto a MainActivity para usar sus funciones públicas
             val activity = context as? MainActivity
 
-            // Creamos el "paquete" con los datos del animal
-            // Dentro del setOnClickListener en AnimalAdaptador.kt
             val bundle = Bundle().apply {
                 putString("nombre", animal.nombre_comun)
-                // Limpiamos espacios y pasamos a minúsculas ya aquí para evitar errores
-                putString("cientifico", animal.nombre_cientifico.lowercase().trim())
+
+                // Formateamos el nombre científico para que coincida con el archivo drawable
+                // Ejemplo: "Vipera Latastei" -> "vipera_latastei"
+                val nombreFormateado = animal.nombre_cientifico
+                    .lowercase()
+                    .trim()
+                    .replace(" ", "_")
+
+                putString("cientifico", nombreFormateado)
             }
 
-            // Creamos el Fragmento del mapa y le metemos los datos
+            // Creamos la instancia de PaginaMapa con los argumentos
             val fragmentMapa = PaginaMapa().apply {
                 arguments = bundle
             }
 
-            activity?.let {
-                // Cambiamos al fragmento del mapa (manteniendo el menú)
-                it.cambiarPagina(fragmentMapa)
+            activity?.let { main ->
+                // Cambiar al fragmento del mapa
+                main.cambiarPagina(fragmentMapa)
 
-                // Marcamos visualmente el icono del mapa en la barra inferior
-                val navBar = it.findViewById<BottomNavigationView>(R.id.barra_navegacion)
+                // Actualizar visualmente la barra de navegación inferior
+                val navBar = main.findViewById<BottomNavigationView>(R.id.barra_navegacion)
                 navBar.selectedItemId = R.id.nav_mapa
             }
         }
 
-        // 3. Lógica de imagen local
-        val nombreFotoLocal = animal.nombre_cientifico.lowercase()
+        // 3. Cargar la imagen del animal en la lista (usando Glide)
+        // Buscamos en drawable el nombre científico en minúsculas (sin guiones bajos para la lista si así los tienes)
+        val nombreFotoLocal = animal.nombre_cientifico.lowercase().trim().replace(" ", "_")
         val imageResId = context.resources.getIdentifier(nombreFotoLocal, "drawable", context.packageName)
 
         Glide.with(context)

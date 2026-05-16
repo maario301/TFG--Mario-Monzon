@@ -13,12 +13,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment // IMPORTANTE: Cambiado a Fragment
+import androidx.fragment.app.Fragment
 import com.example.appvenenos.Classifier
 import com.example.appvenenos.MainActivity
 import com.example.appvenenos.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class PaginaCamara : Fragment() { // Hereda de Fragment
+class PaginaCamara : Fragment() {
 
     private lateinit var classifier: Classifier
     private lateinit var imgPreview: ImageView
@@ -28,13 +29,10 @@ class PaginaCamara : Fragment() { // Hereda de Fragment
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflamos el layout
         val root = inflater.inflate(R.layout.pagina_camara, container, false)
 
-        // Inicializar la IA (usamos requireContext())
         classifier = Classifier(requireContext())
 
-        // Enlazar componentes usando 'root'
         imgPreview = root.findViewById(R.id.imgPreview)
         txtResultado = root.findViewById(R.id.txtPrediction)
         val btnGallery: Button = root.findViewById(R.id.btnGallery)
@@ -75,13 +73,18 @@ class PaginaCamara : Fragment() { // Hereda de Fragment
                 txtResultado.text = "Detectado: $nombreAnimal"
 
                 if (nombreAnimal != "Otros") {
+                    // 1. Guardamos el nombre en SharedPreferences para que el Historial lo sepa
                     val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
                     prefs.edit().putString("ultimo_animal", nombreAnimal).apply()
 
-                    // Notificar a MainActivity que cambie a la pestaña Historial
-                    (activity as? MainActivity)?.let {
-                        it.cambiarPagina(PaginaHistorial())
-                        // Opcional: marcar icono historial en el navBar
+                    // 2. IMPORTANTE: Aquí mandamos al usuario al HISTORIAL
+                    (activity as? MainActivity)?.let { main ->
+                        // Cambiamos al fragmento de Historial
+                        main.cambiarPagina(PaginaHistorial())
+
+                        // 3. Sincronizamos el menú inferior para que marque el icono de Historial
+                        val navBar = main.findViewById<BottomNavigationView>(R.id.barra_navegacion)
+                        navBar.selectedItemId = R.id.nav_historial
                     }
                 }
             }
