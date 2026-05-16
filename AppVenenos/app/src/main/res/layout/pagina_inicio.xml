@@ -67,23 +67,24 @@
         <FrameLayout
             android:id="@+id/containerSerpiente"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:cameraDistance="8000">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardBackSerpiente"
+            android:layout_height="180dp"> <androidx.cardview.widget.CardView
+            android:id="@+id/cardBackSerpiente"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="15dp"
+            app:cardBackgroundColor="#FFF3E0"
+            android:alpha="0">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:cardCornerRadius="15dp"
-                app:cardBackgroundColor="#FFF3E0"
-                android:alpha="0">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="SERPIENTES:\n1. Inmovilizar.\n2. NO succionar.\n3. Quitar joyas."
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:textStyle="bold" />
-            </androidx.cardview.widget.CardView>
+                android:text="SERPIENTES:\n1. Inmovilizar.\n2. NO succionar.\n3. Quitar joyas."
+                android:gravity="center"
+                android:padding="15dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#E65100"/>
+        </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardFrontSerpiente"
                 android:layout_width="match_parent"
@@ -93,10 +94,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="SÍNTOMAS DE MORDEDURA"
+                    android:text="SÍNTOMAS DE MORDEDURA\n(Toca para ver consejos)"
                     android:textColor="#FFFFFF"
                     android:gravity="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:padding="10dp" />
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 

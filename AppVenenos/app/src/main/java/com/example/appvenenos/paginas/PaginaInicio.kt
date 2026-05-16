@@ -48,6 +48,11 @@ class PaginaInicio : Fragment() {
         val front = root.findViewById<CardView>(R.id.cardFrontSerpiente)
         val back = root.findViewById<CardView>(R.id.cardBackSerpiente)
 
+        // AJUSTE: Aplicamos la distancia de cámara por código para evitar el error del XML
+        val distance = 8000
+        val scale = resources.displayMetrics.density
+        container.cameraDistance = distance * scale
+
         setupFlipCard(container, front, back)
 
         return root
@@ -56,7 +61,7 @@ class PaginaInicio : Fragment() {
     private fun setupFlipCard(container: View, front: View, back: View) {
         var isFrontVisible = true
 
-        // Cargamos los animadores que creaste en res/animator
+        // Cargamos los animadores de res/animator
         val flipOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_out) as AnimatorSet
         val flipIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_in) as AnimatorSet
 
