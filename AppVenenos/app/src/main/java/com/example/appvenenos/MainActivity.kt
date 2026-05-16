@@ -33,17 +33,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // --- ESTE ES EL MÉTODO QUE FALTABA ---
     override fun onResume() {
         super.onResume()
-        // Cuando vuelves de la cámara, esta función se ejecuta automáticamente
         val prefs = getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
         val animalDetectado = prefs.getString("ultimo_animal", null)
 
         if (animalDetectado != null) {
-            // Si hay un animal guardado, forzamos el cambio a la pestaña historial
             navBar.selectedItemId = R.id.nav_historial
             cambiarPagina(PaginaHistorial())
+
+            // IMPORTANTE: Limpiamos el valor para que no te fuerce a ir al
+            // historial cada vez que minimices y abras la app.
+            prefs.edit().remove("ultimo_animal").apply()
         }
     }
 
