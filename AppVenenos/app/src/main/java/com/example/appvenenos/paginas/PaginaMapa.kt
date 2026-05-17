@@ -100,7 +100,7 @@ class PaginaMapa : Fragment() {
 
     private fun guardarAvistamiento(token: String, nombreFoto: String, lat: Double, lon: Double) {
         val datos = mapOf(
-            "nombre_cientifico" to nombreFoto.replace("_", " "),
+            "nombre_cientifico" to nombreFoto, // nombreFoto ya tiene guiones bajos
             "latitud" to lat.toString(),
             "longitud" to lon.toString()
         )

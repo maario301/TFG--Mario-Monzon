@@ -46,15 +46,15 @@ class GuardarAvistamientoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print("🔥 GUARDAR AVISTAMIENTO LLAMADO")
         animal_nombre = request.data.get('nombre_cientifico')
         latitud = request.data.get('latitud')
         longitud = request.data.get('longitud')
 
         try:
+            # Buscar directamente con guiones bajos, sin replace
             animal = Animal.objects.get(nombre_cientifico__iexact=animal_nombre)
         except Animal.DoesNotExist:
-            return Response({'error': 'Animal no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': f'Animal no encontrado: {animal_nombre}'}, status=status.HTTP_404_NOT_FOUND)
 
         consulta = Consulta.objects.create(
             usuario=request.user,
@@ -69,7 +69,6 @@ class ListarAvistamientosView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Todos los avistamientos con coordenadas de todos los usuarios
         consultas = Consulta.objects.filter(
             latitud__isnull=False,
             longitud__isnull=False
