@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.appvenenos.paginas.PaginaMapa
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.text.SimpleDateFormat
+import java.util.*
 import androidx.fragment.app.Fragment
 
 class AnimalAdaptador(private val listaAnimales: List<Animal>) :
@@ -86,6 +88,18 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
             .load(if (imageResId != 0) imageResId else android.R.drawable.ic_menu_gallery)
             .centerCrop()
             .into(holder.imgAnimal)
+        val bundle = Bundle().apply {
+            putString("nombre", animal.nombre_comun)
+            val nombreFormateado = animal.nombre_cientifico
+                .lowercase()
+                .trim()
+                .replace(" ", "_")
+            putString("cientifico", nombreFormateado)
+
+            // AÑADIR FECHA ACTUAL
+            val fecha = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
+            putString("fecha", fecha)
+        }
     }
 
     override fun getItemCount() = listaAnimales.size

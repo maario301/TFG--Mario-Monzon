@@ -16,8 +16,6 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import java.text.SimpleDateFormat
-import java.util.*
 
 class PaginaMapa : Fragment() {
 
@@ -31,67 +29,89 @@ class PaginaMapa : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.pagina_mapa, container, false)
 
-        // --- SOLUCIÓN PANTALLA AZUL: Identificación obligatoria ---
+        // INIT OSMDROID
         Configuration.getInstance().userAgentValue = requireContext().packageName
-        Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
+        Configuration.getInstance().load(
+            requireContext(),
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+        )
 
         map = root.findViewById(R.id.mapview)
-
-        // --- FUERZA LA FUENTE DE MAPAS ---
         map.setTileSource(TileSourceFactory.MAPNIK)
-
         map.setMultiTouchControls(true)
         map.overlays.clear()
 
-        // 1. EL PUNTO AZUL (Tu ubicación)
+        // Recoger datos del bundle
+        val nombreComun   = arguments?.getString("nombre")    ?: ""
+        val nombreFoto    = arguments?.getString("cientifico") ?: ""
+        val fecha         = arguments?.getString("fecha")      ?: ""
+
+        // Overlay de Mi Ubicación
         myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
         myLocationOverlay.enableMyLocation()
-        myLocationOverlay.enableFollowLocation()
         myLocationOverlay.isDrawAccuracyEnabled = true
         map.overlays.add(myLocationOverlay)
 
-        // 2. LÓGICA DEL MARCADOR DE ANIMAL
-        val nombreComun = arguments?.getString("nombre") ?: ""
-        val nombreCientifico = arguments?.getString("cientifico") ?: ""
+        // ZOOM inicial — centrar en España para no quedarse en (0,0)
+        map.controller.setZoom(6.0)
+        map.controller.setCenter(GeoPoint(40.416775, -3.703790)) // Madrid
 
-        if (nombreCientifico.isNotEmpty() && nombreCientifico != "Mapa General") {
+        if (nombreComun.isNotEmpty()) {
+            // Intentar colocar marcador en cuanto haya fix GPS
             myLocationOverlay.runOnFirstFix {
                 val myLoc = myLocationOverlay.myLocation
                 activity?.runOnUiThread {
                     if (myLoc != null) {
-                        colocarMarcadorAnimal(myLoc, nombreComun, nombreCientifico)
+                        colocarMarcadorAnimal(myLoc, nombreComun, nombreFoto, fecha)
+                        // Centrar el mapa en la ubicación real una vez obtenida
+                        map.controller.setZoom(18.0)
+                        map.controller.animateTo(myLoc)
                     }
                 }
             }
         }
 
-        map.controller.setZoom(18.0)
         return root
     }
 
-    private fun colocarMarcadorAnimal(posicion: GeoPoint, nombre: String, cientifico: String) {
-        val marcadorBicho = Marker(map)
-        marcadorBicho.position = posicion
-        marcadorBicho.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+    private fun colocarMarcadorAnimal(
+        posicion: GeoPoint,
+        nombre: String,
+        nombreFoto: String,
+        fecha: String
+    ) {
+        val marcador = Marker(map)
+        marcador.position = posicion
+        marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
+        // Usuario desde SharedPreferences
         val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
-        val usuario = prefs.getString("usuario_nombre", "Usuario")
+        val usuario = prefs.getString("usuario_nombre", "Usuario") ?: "Usuario"
 
-        marcadorBicho.title = "⚠️ $nombre"
-        marcadorBicho.snippet = "Avistado por: $usuario\nZona de riesgo detectada."
+        marcador.title   = "⚠️ $nombre"
+        // AHORA SE VE: usuario + fecha
+        marcador.snippet = "👤 $usuario\n📅 $fecha"
 
-        val nombreFoto = cientifico.lowercase().replace(" ", "_")
+        // Icono: el nombre ya viene formateado con guiones bajos desde el adaptador
         val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
-
-        if (resId != 0) {
-            marcadorBicho.icon = resources.getDrawable(resId, null)
+        marcador.icon = if (resId != 0) {
+            resources.getDrawable(resId, null)
         } else {
-            // Usar marcador rojo estándar si no hay foto
-            marcadorBicho.icon = resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
+            resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
         }
 
-        map.overlays.add(marcadorBicho)
-        marcadorBicho.showInfoWindow()
+        map.overlays.add(marcador)
+        marcador.showInfoWindow()
         map.invalidate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        map.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        map.onPause()
     }
 }
