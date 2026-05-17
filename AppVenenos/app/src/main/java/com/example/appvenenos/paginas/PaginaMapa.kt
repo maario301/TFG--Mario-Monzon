@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.appvenenos.Avistamiento
 import com.example.appvenenos.ConexionApi
 import com.example.appvenenos.R
+import com.example.appvenenos.SessionManager
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -45,9 +46,9 @@ class PaginaMapa : Fragment() {
         map.setMultiTouchControls(true)
         map.overlays.clear()
 
-        val nombreComun  = arguments?.getString("nombre")    ?: ""
-        val nombreFoto   = arguments?.getString("cientifico") ?: ""
-        val fecha        = arguments?.getString("fecha")      ?: ""
+        val nombreComun = arguments?.getString("nombre") ?: ""
+        val nombreFoto  = arguments?.getString("cientifico") ?: ""
+        val fecha       = arguments?.getString("fecha") ?: ""
 
         // Overlay ubicación propia
         myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
@@ -59,9 +60,10 @@ class PaginaMapa : Fragment() {
         map.controller.setZoom(6.0)
         map.controller.setCenter(GeoPoint(40.416775, -3.703790))
 
-        // Obtener token
+        // ✅ TOKEN CORRECTO desde SessionManager
+        val sessionManager = SessionManager(requireContext())
+        val token = "Bearer ${sessionManager.fetchAuthToken()}"
         val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
-        val token = "Bearer ${prefs.getString("token", "")}"
         val usuario = prefs.getString("usuario_nombre", "Usuario") ?: "Usuario"
 
         // 1. Cargar todos los avistamientos del servidor
@@ -74,17 +76,8 @@ class PaginaMapa : Fragment() {
             map.controller.setZoom(18.0)
             map.controller.animateTo(ubicacionPorDefecto)
 
-            // Guardar en el servidor
-            val datos = mapOf(
-                "nombre_cientifico" to nombreFoto.replace("_", " "),
-                "latitud" to "40.416775",
-                "longitud" to "-3.703790"
-            )
-            ConexionApi.instancia.guardarAvistamiento(token, datos)
-                .enqueue(object : Callback<Void> {
-                    override fun onResponse(call: Call<Void>, response: Response<Void>) {}
-                    override fun onFailure(call: Call<Void>, t: Throwable) {}
-                })
+            // Guardar en el servidor con coordenadas por defecto
+            guardarAvistamiento(token, nombreFoto, 40.416775, -3.703790)
 
             // Cuando llegue GPS real, actualizar
             myLocationOverlay.runOnFirstFix {
@@ -92,27 +85,30 @@ class PaginaMapa : Fragment() {
                 activity?.runOnUiThread {
                     if (myLoc != null) {
                         map.overlays.removeIf { it is Marker }
+                        cargarAvistamientos(token)
                         colocarMarcador(myLoc, nombreComun, nombreFoto, usuario, fecha)
                         map.controller.setZoom(18.0)
                         map.controller.animateTo(myLoc)
-
-                        // Actualizar coordenadas reales en el servidor
-                        val datosReales = mapOf(
-                            "nombre_cientifico" to nombreFoto.replace("_", " "),
-                            "latitud" to myLoc.latitude.toString(),
-                            "longitud" to myLoc.longitude.toString()
-                        )
-                        ConexionApi.instancia.guardarAvistamiento(token, datosReales)
-                            .enqueue(object : Callback<Void> {
-                                override fun onResponse(call: Call<Void>, response: Response<Void>) {}
-                                override fun onFailure(call: Call<Void>, t: Throwable) {}
-                            })
+                        guardarAvistamiento(token, nombreFoto, myLoc.latitude, myLoc.longitude)
                     }
                 }
             }
         }
 
         return root
+    }
+
+    private fun guardarAvistamiento(token: String, nombreFoto: String, lat: Double, lon: Double) {
+        val datos = mapOf(
+            "nombre_cientifico" to nombreFoto.replace("_", " "),
+            "latitud" to lat.toString(),
+            "longitud" to lon.toString()
+        )
+        ConexionApi.instancia.guardarAvistamiento(token, datos)
+            .enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {}
+                override fun onFailure(call: Call<Void>, t: Throwable) {}
+            })
     }
 
     private fun cargarAvistamientos(token: String) {
@@ -156,6 +152,7 @@ class PaginaMapa : Fragment() {
         }
 
         map.overlays.add(marcador)
+        map.invalidate()
     }
 
     override fun onResume() {
