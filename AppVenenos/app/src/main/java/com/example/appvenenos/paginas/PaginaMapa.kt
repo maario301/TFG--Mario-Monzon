@@ -28,61 +28,76 @@ class PaginaMapa : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.pagina_mapa, container, false)
 
+        // Cargar configuración de OSMDroid
         Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
 
         map = root.findViewById(R.id.mapview)
         map.setMultiTouchControls(true)
+        map.overlays.clear() // Empezamos de cero cada vez que entramos
 
-        // Limpiar overlays antiguos por si acaso
-        map.overlays.clear()
-
-        val nombreComun = arguments?.getString("nombre") ?: "Mapa General"
+        // 1. Obtener datos del Bundle
+        val nombreComun = arguments?.getString("nombre") ?: ""
         val nombreCientifico = arguments?.getString("cientifico") ?: ""
 
+        // 2. Obtener Ubicación Real
         val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val lastLocation = try {
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         } catch (e: SecurityException) { null }
 
-        val puntoAvistamiento = if (lastLocation != null) {
+        val puntoActual = if (lastLocation != null) {
             GeoPoint(lastLocation.latitude, lastLocation.longitude)
         } else {
-            GeoPoint(40.4167, -3.7033)
+            GeoPoint(40.4167, -3.7033) // Madrid por defecto
         }
 
-        map.controller.setZoom(18.0)
-        map.controller.setCenter(puntoAvistamiento)
+        // 3. Configurar Vista inicial
+        map.controller.setZoom(17.0)
+        map.controller.setCenter(puntoActual)
 
-        // 5. Crear el Marcador Personalizado
-        // IMPORTANTE: NO usamos map.overlays.clear() para que se mantengan los anteriores
-
+        // 4. LÓGICA DEL MARCADOR (Aquí está el arreglo)
+        // Solo ponemos marcador si venimos de identificar algo
         if (nombreCientifico.isNotEmpty() && nombreCientifico != "Mapa General") {
-            val marcador = Marker(map)
-            marcador.position = puntoAvistamiento
-            marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
+            val marcadorBicho = Marker(map)
+            marcadorBicho.position = puntoActual
+            marcadorBicho.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+            // Título y detalles
             val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
-            val usuarioLogueado = prefs.getString("usuario_nombre", "Usuario Anónimo")
+            val usuarioLogueado = prefs.getString("usuario_nombre", "Usuario")
             val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
 
-            marcador.title = nombreComun
-            marcador.snippet = "Avistado por: $usuarioLogueado\nFecha: $fechaActual"
+            marcadorBicho.title = "⚠️ $nombreComun"
+            marcadorBicho.snippet = "Avistado por: $usuarioLogueado\nFecha: $fechaActual\nZona de riesgo detectada."
 
+            // Intentar poner la foto del animal como icono
             val nombreFoto = nombreCientifico.lowercase().replace(" ", "_")
             val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
 
             if (resId != 0) {
-                val drawableOriginal = requireContext().getDrawable(resId)
-                marcador.icon = drawableOriginal
-                marcador.image = drawableOriginal
+                // Si la foto existe, la ponemos (Opcional: puedes usar un marcador estándar si la foto es muy grande)
+                marcadorBicho.icon = resources.getDrawable(resId, null)
+            } else {
+                // Icono por defecto de OSMDroid si no hay foto
+                marcadorBicho.icon = resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
             }
 
-            // Se añade a la lista existente sin borrar nada
-            map.overlays.add(marcador)
+            map.overlays.add(marcadorBicho)
+
+            // Forzar que el cartelito (InfoWindow) se abra solo al cargar
+            marcadorBicho.showInfoWindow()
+        } else {
+            // Si es "Mapa General", ponemos un marcador de "Estás aquí"
+            val marcadorYo = Marker(map)
+            marcadorYo.position = puntoActual
+            marcadorYo.title = "Estás aquí"
+            marcadorYo.icon = resources.getDrawable(org.osmdroid.library.R.drawable.person, null)
+            map.overlays.add(marcadorYo)
         }
 
-        map.invalidate()
+        map.invalidate() // Refrescar mapa
         return root
     }
 }
