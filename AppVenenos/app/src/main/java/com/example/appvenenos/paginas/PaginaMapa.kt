@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.appvenenos.R
 import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -29,25 +30,31 @@ class PaginaMapa : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.pagina_mapa, container, false)
+
+        // --- SOLUCIÓN PANTALLA AZUL: Identificación obligatoria ---
+        Configuration.getInstance().userAgentValue = requireContext().packageName
         Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
 
         map = root.findViewById(R.id.mapview)
+
+        // --- FUERZA LA FUENTE DE MAPAS ---
+        map.setTileSource(TileSourceFactory.MAPNIK)
+
         map.setMultiTouchControls(true)
         map.overlays.clear()
 
-        // 1. EL PUNTO AZUL REAL (Tu ubicación en casa)
+        // 1. EL PUNTO AZUL (Tu ubicación)
         myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
-        myLocationOverlay.enableMyLocation() // Activa el punto azul
-        myLocationOverlay.enableFollowLocation() // Centra el mapa en ti automáticamente
-        myLocationOverlay.isDrawAccuracyEnabled = true // Dibuja el círculo de precisión
+        myLocationOverlay.enableMyLocation()
+        myLocationOverlay.enableFollowLocation()
+        myLocationOverlay.isDrawAccuracyEnabled = true
         map.overlays.add(myLocationOverlay)
 
-        // 2. LÓGICA DEL MARCADOR DE ANIMAL (Si vienes de identificar)
+        // 2. LÓGICA DEL MARCADOR DE ANIMAL
         val nombreComun = arguments?.getString("nombre") ?: ""
         val nombreCientifico = arguments?.getString("cientifico") ?: ""
 
         if (nombreCientifico.isNotEmpty() && nombreCientifico != "Mapa General") {
-            // Esperamos un momento a que el GPS dé la posición o usamos una por defecto rápida
             myLocationOverlay.runOnFirstFix {
                 val myLoc = myLocationOverlay.myLocation
                 activity?.runOnUiThread {
@@ -73,13 +80,13 @@ class PaginaMapa : Fragment() {
         marcadorBicho.title = "⚠️ $nombre"
         marcadorBicho.snippet = "Avistado por: $usuario\nZona de riesgo detectada."
 
-        // Cargar imagen del bicho
         val nombreFoto = cientifico.lowercase().replace(" ", "_")
         val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
 
         if (resId != 0) {
             marcadorBicho.icon = resources.getDrawable(resId, null)
         } else {
+            // Usar marcador rojo estándar si no hay foto
             marcadorBicho.icon = resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
         }
 
