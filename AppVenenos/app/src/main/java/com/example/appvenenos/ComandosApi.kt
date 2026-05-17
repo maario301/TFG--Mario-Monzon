@@ -12,6 +12,14 @@ interface ComandosApi {
 
     @POST("api/register/") // <--- ASEGÚRATE DE QUE ESTÉ ASÍ, CON BARRA AL FINAL
     fun registrar(@Body datos: Map<String, String>): Call<Void>
+    @GET("api/avistamientos/")
+    fun getAvistamientos(@Header("Authorization") token: String): Call<List<Avistamiento>>
+
+    @POST("api/avistamientos/guardar/")
+    fun guardarAvistamiento(
+        @Header("Authorization") token: String,
+        @Body datos: Map<String, String>
+    ): Call<Void>
 
     @GET("api/animales/")
     fun getAnimales(@Header("Authorization") token: String): Call<List<Animal>>

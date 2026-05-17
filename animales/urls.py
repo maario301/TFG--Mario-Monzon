@@ -5,6 +5,8 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from .views import AnimalViewSet, ConsultaViewSet, RegistroUsuarioView, GuardarAvistamientoView, ListarAvistamientosView
+
 
 router = DefaultRouter()
 router.register(r'animales', AnimalViewSet)
@@ -18,6 +20,8 @@ urlpatterns = [
     # 2. Las rutas del Token
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('avistamientos/', ListarAvistamientosView.as_view(), name='listar_avistamientos'),
+    path('avistamientos/guardar/', GuardarAvistamientoView.as_view(), name='guardar_avistamiento'),
 
     # 3. El router al final
     path('', include(router.urls)),

@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from .models import Animal, Consulta
 from .serializers import AnimalSerializer, ConsultaSerializer
 from rest_framework import filters # Importa esto arriba
+from rest_framework.permissions import IsAuthenticated
+
 
 class AnimalViewSet(viewsets.ModelViewSet):
     queryset = Animal.objects.all()
@@ -38,3 +40,48 @@ class RegistroUsuarioView(APIView):
             return Response({'mensaje': 'Usuario creado correctamente'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class GuardarAvistamientoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        animal_nombre = request.data.get('nombre_cientifico')
+        latitud = request.data.get('latitud')
+        longitud = request.data.get('longitud')
+
+        try:
+            animal = Animal.objects.get(nombre_cientifico__iexact=animal_nombre)
+        except Animal.DoesNotExist:
+            return Response({'error': 'Animal no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        consulta = Consulta.objects.create(
+            usuario=request.user,
+            animal=animal,
+            latitud=latitud,
+            longitud=longitud
+        )
+        return Response(ConsultaSerializer(consulta).data, status=status.HTTP_201_CREATED)
+
+
+class ListarAvistamientosView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Todos los avistamientos con coordenadas de todos los usuarios
+        consultas = Consulta.objects.filter(
+            latitud__isnull=False,
+            longitud__isnull=False
+        ).select_related('animal', 'usuario')
+
+        data = []
+        for c in consultas:
+            data.append({
+                'nombre_comun': c.animal.nombre_comun,
+                'nombre_cientifico': c.animal.nombre_cientifico,
+                'usuario': c.usuario.username,
+                'fecha': c.fecha.strftime('%d/%m/%Y %H:%M'),
+                'latitud': c.latitud,
+                'longitud': c.longitud,
+            })
+        return Response(data)
