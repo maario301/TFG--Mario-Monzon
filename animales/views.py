@@ -46,6 +46,7 @@ class GuardarAvistamientoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        print("🔥 GUARDAR AVISTAMIENTO LLAMADO")
         animal_nombre = request.data.get('nombre_cientifico')
         latitud = request.data.get('latitud')
         longitud = request.data.get('longitud')
