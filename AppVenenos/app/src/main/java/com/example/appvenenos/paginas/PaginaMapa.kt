@@ -2,6 +2,9 @@ package com.example.appvenenos.paginas
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
@@ -14,6 +17,7 @@ import com.example.appvenenos.R
 import com.example.appvenenos.SessionManager
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -44,42 +48,37 @@ class PaginaMapa : Fragment() {
         map = root.findViewById(R.id.mapview)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
+        map.minZoomLevel = 4.0
+        map.setScrollableAreaLimitDouble(BoundingBox(71.0, 40.0, 25.0, -25.0))
         map.overlays.clear()
 
         val nombreComun = arguments?.getString("nombre") ?: ""
         val nombreFoto  = arguments?.getString("cientifico") ?: ""
         val fecha       = arguments?.getString("fecha") ?: ""
 
-        // Overlay ubicación propia
         myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
         myLocationOverlay.enableMyLocation()
         myLocationOverlay.isDrawAccuracyEnabled = true
         map.overlays.add(myLocationOverlay)
 
-        // Centrado inicial en España
-        map.controller.setZoom(6.0)
+        // Zoom nivel ciudad Madrid
+        map.controller.setZoom(12.0)
         map.controller.setCenter(GeoPoint(40.416775, -3.703790))
 
-        // ✅ TOKEN CORRECTO desde SessionManager
         val sessionManager = SessionManager(requireContext())
         val token = "Bearer ${sessionManager.fetchAuthToken()}"
         val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
         val usuario = prefs.getString("usuario_nombre", "Usuario") ?: "Usuario"
 
-        // 1. Cargar todos los avistamientos del servidor
         cargarAvistamientos(token)
 
-        // 2. Si venimos de la ficha de un animal, guardar y colocar su marcador
         if (nombreComun.isNotEmpty()) {
             val ubicacionPorDefecto = GeoPoint(40.416775, -3.703790)
             colocarMarcador(ubicacionPorDefecto, nombreComun, nombreFoto, usuario, fecha)
-            map.controller.setZoom(18.0)
             map.controller.animateTo(ubicacionPorDefecto)
 
-            // Guardar en el servidor con coordenadas por defecto
             guardarAvistamiento(token, nombreFoto, 40.416775, -3.703790)
 
-            // Cuando llegue GPS real, actualizar
             myLocationOverlay.runOnFirstFix {
                 val myLoc = myLocationOverlay.myLocation
                 activity?.runOnUiThread {
@@ -87,7 +86,6 @@ class PaginaMapa : Fragment() {
                         map.overlays.removeIf { it is Marker }
                         cargarAvistamientos(token)
                         colocarMarcador(myLoc, nombreComun, nombreFoto, usuario, fecha)
-                        map.controller.setZoom(18.0)
                         map.controller.animateTo(myLoc)
                         guardarAvistamiento(token, nombreFoto, myLoc.latitude, myLoc.longitude)
                     }
@@ -100,7 +98,7 @@ class PaginaMapa : Fragment() {
 
     private fun guardarAvistamiento(token: String, nombreFoto: String, lat: Double, lon: Double) {
         val datos = mapOf(
-            "nombre_cientifico" to nombreFoto, // nombreFoto ya tiene guiones bajos
+            "nombre_cientifico" to nombreFoto,
             "latitud" to lat.toString(),
             "longitud" to lon.toString()
         )
@@ -121,7 +119,7 @@ class PaginaMapa : Fragment() {
                     if (response.isSuccessful) {
                         response.body()?.forEach { av ->
                             val punto = GeoPoint(av.latitud, av.longitud)
-                            val foto = av.nombre_cientifico.lowercase().replace(" ", "_")
+                            val foto = av.nombre_cientifico.lowercase()
                             colocarMarcador(punto, av.nombre_comun, foto, av.usuario, av.fecha)
                         }
                         map.invalidate()
@@ -145,10 +143,13 @@ class PaginaMapa : Fragment() {
         marcador.snippet = "👤 $usuario\n📅 $fecha"
 
         val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
-        marcador.icon = if (resId != 0) {
-            resources.getDrawable(resId, null)
+        if (resId != 0) {
+            val original = BitmapFactory.decodeResource(resources, resId)
+            val size = (40 * resources.displayMetrics.density).toInt()
+            val scaled = Bitmap.createScaledBitmap(original, size, size, true)
+            marcador.icon = BitmapDrawable(resources, scaled)
         } else {
-            resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
+            marcador.icon = resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
         }
 
         map.overlays.add(marcador)
