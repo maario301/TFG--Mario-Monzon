@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt', # <-- Asegúrate de que esta línea esté aquí
     'corsheaders',
+    'drf_yasg',
     'animales',
 ]
 
@@ -81,8 +82,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'proyecto_venenos',
-        'USER': 'mario1',      # El usuario que has elegido
-        'PASSWORD': 'Dr3ZSTvV', # La contraseña que has elegido
+        'USER': 'mario1',      
+        'PASSWORD': 'Dr3ZSTvV', 
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

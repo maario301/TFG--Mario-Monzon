@@ -7,4 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('animales.urls')),
     path('api-auth/', include('rest_framework.urls')),
+    path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger'),  # <-- AÑADE ESTO
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # AÑADE ESTO
