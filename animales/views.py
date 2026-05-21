@@ -72,7 +72,14 @@ class GuardarAvistamientoView(APIView):
             longitud=longitud
         )
         return Response(ConsultaSerializer(consulta).data, status=status.HTTP_201_CREATED)
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        return Response({
+            'username': request.user.username,
+            'is_staff': request.user.is_staff
+        })
 
 class ListarAvistamientosView(APIView):
     permission_classes = [IsAuthenticated]
@@ -94,3 +101,4 @@ class ListarAvistamientosView(APIView):
                 'longitud': c.longitud,
             })
         return Response(data)
+    
