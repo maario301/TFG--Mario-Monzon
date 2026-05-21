@@ -15,6 +15,9 @@ interface ComandosApi {
     @GET("api/avistamientos/")
     fun getAvistamientos(@Header("Authorization") token: String): Call<List<Avistamiento>>
 
+    @GET("api/me/")
+    fun getMe(@Header("Authorization") token: String): Call<MeResponse>
+
     @POST("api/avistamientos/guardar/")
     fun guardarAvistamiento(
         @Header("Authorization") token: String,
