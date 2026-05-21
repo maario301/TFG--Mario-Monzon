@@ -93,6 +93,7 @@ class ListarAvistamientosView(APIView):
         data = []
         for c in consultas:
             data.append({
+                'id': c.id,
                 'nombre_comun': c.animal.nombre_comun,
                 'nombre_cientifico': c.animal.nombre_cientifico,
                 'usuario': c.usuario.username,

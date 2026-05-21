@@ -10,6 +10,7 @@ import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.appvenenos.Avistamiento
 import com.example.appvenenos.ConexionApi
@@ -61,7 +62,6 @@ class PaginaMapa : Fragment() {
         myLocationOverlay.isDrawAccuracyEnabled = true
         map.overlays.add(myLocationOverlay)
 
-        // Zoom nivel ciudad Madrid
         map.controller.setZoom(12.0)
         map.controller.setCenter(GeoPoint(40.416775, -3.703790))
 
@@ -69,12 +69,13 @@ class PaginaMapa : Fragment() {
         val token = "Bearer ${sessionManager.fetchAuthToken()}"
         val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
         val usuario = prefs.getString("usuario_nombre", "Usuario") ?: "Usuario"
+        val isAdmin = prefs.getBoolean("is_admin", false)
 
-        cargarAvistamientos(token)
+        cargarAvistamientos(token, isAdmin)
 
         if (nombreComun.isNotEmpty()) {
             val ubicacionPorDefecto = GeoPoint(40.416775, -3.703790)
-            colocarMarcador(ubicacionPorDefecto, nombreComun, nombreFoto, usuario, fecha)
+            colocarMarcador(ubicacionPorDefecto, nombreComun, nombreFoto, usuario, fecha, -1, token, isAdmin)
             map.controller.animateTo(ubicacionPorDefecto)
 
             guardarAvistamiento(token, nombreFoto, 40.416775, -3.703790)
@@ -84,8 +85,8 @@ class PaginaMapa : Fragment() {
                 activity?.runOnUiThread {
                     if (myLoc != null) {
                         map.overlays.removeIf { it is Marker }
-                        cargarAvistamientos(token)
-                        colocarMarcador(myLoc, nombreComun, nombreFoto, usuario, fecha)
+                        cargarAvistamientos(token, isAdmin)
+                        colocarMarcador(myLoc, nombreComun, nombreFoto, usuario, fecha, -1, token, isAdmin)
                         map.controller.animateTo(myLoc)
                         guardarAvistamiento(token, nombreFoto, myLoc.latitude, myLoc.longitude)
                     }
@@ -109,7 +110,7 @@ class PaginaMapa : Fragment() {
             })
     }
 
-    private fun cargarAvistamientos(token: String) {
+    private fun cargarAvistamientos(token: String, isAdmin: Boolean) {
         ConexionApi.instancia.getAvistamientos(token)
             .enqueue(object : Callback<List<Avistamiento>> {
                 override fun onResponse(
@@ -120,7 +121,7 @@ class PaginaMapa : Fragment() {
                         response.body()?.forEach { av ->
                             val punto = GeoPoint(av.latitud, av.longitud)
                             val foto = av.nombre_cientifico.lowercase()
-                            colocarMarcador(punto, av.nombre_comun, foto, av.usuario, av.fecha)
+                            colocarMarcador(punto, av.nombre_comun, foto, av.usuario, av.fecha, av.id, token, isAdmin)
                         }
                         map.invalidate()
                     }
@@ -134,7 +135,10 @@ class PaginaMapa : Fragment() {
         nombre: String,
         nombreFoto: String,
         usuario: String,
-        fecha: String
+        fecha: String,
+        id: Int,
+        token: String,
+        isAdmin: Boolean
     ) {
         val marcador = Marker(map)
         marcador.position = posicion
@@ -150,6 +154,32 @@ class PaginaMapa : Fragment() {
             marcador.icon = BitmapDrawable(resources, scaled)
         } else {
             marcador.icon = resources.getDrawable(org.osmdroid.library.R.drawable.marker_default, null)
+        }
+
+        if (isAdmin && id != -1) {
+            marcador.setOnMarkerClickListener { m, _ ->
+                m.showInfoWindow()
+                AlertDialog.Builder(requireContext())
+                    .setTitle("⚠️ $nombre")
+                    .setMessage("👤 $usuario\n📅 $fecha\n\n¿Eliminar este avistamiento?")
+                    .setPositiveButton("Eliminar") { _, _ ->
+                        ConexionApi.instancia.eliminarAvistamiento(token, id)
+                            .enqueue(object : Callback<Void> {
+                                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                                    if (response.isSuccessful) {
+                                        activity?.runOnUiThread {
+                                            map.overlays.remove(marcador)
+                                            map.invalidate()
+                                        }
+                                    }
+                                }
+                                override fun onFailure(call: Call<Void>, t: Throwable) {}
+                            })
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+                true
+            }
         }
 
         map.overlays.add(marcador)
