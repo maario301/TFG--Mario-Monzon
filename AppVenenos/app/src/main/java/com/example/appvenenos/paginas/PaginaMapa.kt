@@ -140,7 +140,7 @@ class PaginaMapa : Fragment() {
         token: String,
         isAdmin: Boolean
     ) {
-        if (!::map.isInitialized) return
+        if (!::map.isInitialized || !map.isAttachedToWindow) return  // ← cambia esto
 
         val marcador = Marker(map)
         marcador.position = posicion
