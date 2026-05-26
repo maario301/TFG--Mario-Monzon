@@ -18,7 +18,7 @@ class AnimalViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         # Cualquiera puede consultar
-        return [AllowAny()]
+        return [IsAuthenticated()]
 
 
 class ConsultaViewSet(viewsets.ModelViewSet):
