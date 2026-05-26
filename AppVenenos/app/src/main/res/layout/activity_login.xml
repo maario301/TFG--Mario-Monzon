@@ -4,21 +4,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="#FFFFFF">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Venenos App"
-        android:textSize="24sp"
+        android:text="VenoMap"
+        android:textSize="28sp"
         android:textStyle="bold"
+        android:textColor="#2D6A2D"
         android:layout_marginBottom="30dp"/>
 
     <EditText
         android:id="@+id/etUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Usuario "
+        android:hint="Usuario"
         android:inputType="text" />
 
     <EditText
@@ -34,14 +36,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Entrar"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#2D6A2D"/>
 
     <TextView
         android:id="@+id/tvRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¿No tienes cuenta? Regístrate"
-        android:textColor="@color/black"
+        android:textColor="#2D6A2D"
         android:layout_marginTop="20dp"
         android:padding="10dp"
         android:textSize="14sp" />

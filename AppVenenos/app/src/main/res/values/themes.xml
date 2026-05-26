@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.AppVenenos" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#2D6A2D</item>
+        <item name="colorPrimaryVariant">#1B4D1B</item>
+        <item name="android:statusBarColor">#2D6A2D</item>
     </style>
 
     <style name="Theme.AppVenenos" parent="Base.Theme.AppVenenos" />
