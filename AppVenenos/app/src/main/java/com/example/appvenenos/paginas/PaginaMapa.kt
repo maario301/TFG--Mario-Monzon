@@ -123,7 +123,7 @@ class PaginaMapa : Fragment() {
                             val foto = av.nombre_cientifico.lowercase()
                             colocarMarcador(punto, av.nombre_comun, foto, av.usuario, av.fecha, av.id, token, isAdmin)
                         }
-                        map.invalidate()
+                        if (::map.isInitialized) map.invalidate()
                     }
                 }
                 override fun onFailure(call: Call<List<Avistamiento>>, t: Throwable) {}
@@ -140,6 +140,8 @@ class PaginaMapa : Fragment() {
         token: String,
         isAdmin: Boolean
     ) {
+        if (!::map.isInitialized) return
+
         val marcador = Marker(map)
         marcador.position = posicion
         marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -168,8 +170,10 @@ class PaginaMapa : Fragment() {
                                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                     if (response.isSuccessful) {
                                         activity?.runOnUiThread {
-                                            map.overlays.remove(marcador)
-                                            map.invalidate()
+                                            if (::map.isInitialized) {
+                                                map.overlays.remove(marcador)
+                                                map.invalidate()
+                                            }
                                         }
                                     }
                                 }
@@ -188,11 +192,11 @@ class PaginaMapa : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        map.onResume()
+        if (::map.isInitialized) map.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        map.onPause()
+        if (::map.isInitialized) map.onPause()
     }
 }
