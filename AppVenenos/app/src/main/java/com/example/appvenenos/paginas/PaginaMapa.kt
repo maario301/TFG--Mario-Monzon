@@ -18,6 +18,7 @@ import com.example.appvenenos.R
 import com.example.appvenenos.SessionManager
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.tileprovider.tilesource.XYTileSource
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -47,7 +48,16 @@ class PaginaMapa : Fragment() {
         )
 
         map = root.findViewById(R.id.mapview)
-        map.setTileSource(TileSourceFactory.MAPNIK)
+        val cartoLight = XYTileSource(
+            "CartoDB",
+            0, 19, 256, ".png",
+            arrayOf(
+                "https://a.basemaps.cartocdn.com/light_all/",
+                "https://b.basemaps.cartocdn.com/light_all/",
+                "https://c.basemaps.cartocdn.com/light_all/"
+            )
+        )
+        map.setTileSource(cartoLight)
         map.setMultiTouchControls(true)
         map.minZoomLevel = 4.0
         map.setScrollableAreaLimitDouble(BoundingBox(71.0, 40.0, 25.0, -25.0))
