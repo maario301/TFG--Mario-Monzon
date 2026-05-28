@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log // ← Importante para los logs de control
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.MapsInitializer // ← Importante para forzar el renderizador
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -36,6 +38,18 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
     private var usuario: String = ""
     private var fecha: String = ""
     private val marcadoresMap = mutableMapOf<Marker, Int>()
+
+    // --- BLOQUE VITAL AÑADIDO: Forzamos el renderizador clásico aquí ---
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LEGACY) { renderer ->
+            when (renderer) {
+                MapsInitializer.Renderer.LATEST -> Log.d("MapsRenderer", "Se está usando el renderizador moderno.")
+                MapsInitializer.Renderer.LEGACY -> Log.d("MapsRenderer", "Se ha forzado con éxito el renderizador clásico.")
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -113,7 +127,7 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         ConexionApi.instancia.getAvistamientos(token)
             .enqueue(object : Callback<List<Avistamiento>> {
                 override fun onResponse(call: Call<List<Avistamiento>>, response: Response<List<Avistamiento>>) {
-                    if (!isAdded) return  // ← añade esto
+                    if (!isAdded) return
                     if (response.isSuccessful) {
                         response.body()?.forEach { av ->
                             val punto = LatLng(av.latitud, av.longitud)
@@ -125,6 +139,7 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
                 override fun onFailure(call: Call<List<Avistamiento>>, t: Throwable) {}
             })
     }
+
     private fun colocarMarcador(
         posicion: LatLng,
         nombre: String,
@@ -133,7 +148,7 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         fecha: String,
         id: Int
     ) {
-        if (!isAdded || googleMap == null) return  // ← añade esto
+        if (!isAdded || googleMap == null) return
 
         val map = googleMap ?: return
 
