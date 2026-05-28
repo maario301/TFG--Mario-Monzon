@@ -113,6 +113,7 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         ConexionApi.instancia.getAvistamientos(token)
             .enqueue(object : Callback<List<Avistamiento>> {
                 override fun onResponse(call: Call<List<Avistamiento>>, response: Response<List<Avistamiento>>) {
+                    if (!isAdded) return  // ← añade esto
                     if (response.isSuccessful) {
                         response.body()?.forEach { av ->
                             val punto = LatLng(av.latitud, av.longitud)
@@ -124,7 +125,6 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
                 override fun onFailure(call: Call<List<Avistamiento>>, t: Throwable) {}
             })
     }
-
     private fun colocarMarcador(
         posicion: LatLng,
         nombre: String,
@@ -133,6 +133,8 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         fecha: String,
         id: Int
     ) {
+        if (!isAdded || googleMap == null) return  // ← añade esto
+
         val map = googleMap ?: return
 
         val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
