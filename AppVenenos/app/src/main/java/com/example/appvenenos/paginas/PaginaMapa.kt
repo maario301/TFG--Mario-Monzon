@@ -61,7 +61,6 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
