@@ -66,7 +66,12 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         googleMap = map
 
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(40.416775, -3.703790), 12f))
-        map.isMyLocationEnabled = true
+        if (androidx.core.app.ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            map.isMyLocationEnabled = true
+        }
 
         cargarAvistamientos()
 
