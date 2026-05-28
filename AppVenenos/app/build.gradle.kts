@@ -100,4 +100,5 @@ dependencies {
 
     // Librerías de TensorFlow Lite para que funcione la IA
     implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 }

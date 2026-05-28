@@ -28,6 +28,11 @@
         android:theme="@style/Theme.AppVenenos"
         tools:targetApi="34">
 
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBEVwJlZ5H9v3-y_35yGpjFeP2jyAeexF4"/>
+
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -46,14 +51,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
 
-        <activity
-            android:name=".paginas.PaginaCamara"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".paginas.PaginaMapa"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+
 
     </application>
 
