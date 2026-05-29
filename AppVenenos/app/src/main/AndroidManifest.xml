@@ -16,6 +16,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
+        android:name=".VenoMapApp"
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
