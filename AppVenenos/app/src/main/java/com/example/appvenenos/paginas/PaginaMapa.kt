@@ -6,6 +6,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -255,13 +259,13 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
             .title("⚠️ $nombre")
             .snippet("👤 $usuario\n📅 $fecha")
 
-        // Escalar el icono personalizado desde tus drawables
+        // Construimos un pin (chincheta) con la foto del animal recortada dentro
         val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
         if (resId != 0) {
             val original = BitmapFactory.decodeResource(resources, resId)
-            val size = (40 * resources.displayMetrics.density).toInt()
-            val scaled = Bitmap.createScaledBitmap(original, size, size, true)
-            opciones.icon(BitmapDescriptorFactory.fromBitmap(scaled))
+            if (original != null) {
+                opciones.icon(BitmapDescriptorFactory.fromBitmap(crearIconoPin(original)))
+            }
         }
 
         val marker = map.addMarker(opciones) ?: return
@@ -269,6 +273,57 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         if (id != -1) {
             marcadoresMap[marker] = id
         }
+    }
+
+    // Genera un pin de mapa (círculo rojo + punta + borde blanco) con la foto recortada en círculo
+    private fun crearIconoPin(foto: Bitmap): Bitmap {
+        val d = resources.displayMetrics.density
+        val r = 24f * d                 // radio de la cabeza del pin
+        val puntaAlto = 16f * d         // alto de la punta inferior
+        val anchoAnillo = 4f * d        // grosor del borde blanco
+        val width = (2 * r).toInt()
+        val height = (2 * r + puntaAlto).toInt()
+        val cx = r
+
+        val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bmp)
+
+        val pinPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#D32F2F")   // rojo (peligro)
+            style = Paint.Style.FILL
+        }
+
+        // Cabeza (círculo) + punta (triángulo) = forma de chincheta
+        canvas.drawCircle(cx, r, r, pinPaint)
+        val punta = Path().apply {
+            moveTo(cx - r, r)
+            lineTo(cx + r, r)
+            lineTo(cx, height.toFloat())
+            close()
+        }
+        canvas.drawPath(punta, pinPaint)
+
+        // Anillo blanco
+        val blancoR = r - anchoAnillo
+        val blancoPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.WHITE
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(cx, r, blancoR, blancoPaint)
+
+        // Foto del animal recortada en círculo dentro del anillo
+        val fotoR = blancoR - 2f * d
+        val tam = (2 * fotoR).toInt()
+        if (tam > 0) {
+            val fotoEscalada = Bitmap.createScaledBitmap(foto, tam, tam, true)
+            val save = canvas.save()
+            val recorte = Path().apply { addCircle(cx, r, fotoR, Path.Direction.CW) }
+            canvas.clipPath(recorte)
+            canvas.drawBitmap(fotoEscalada, cx - fotoR, r - fotoR, null)
+            canvas.restoreToCount(save)
+        }
+
+        return bmp
     }
 
     // Lógica al pulsar un marcador (devuelve true si consumimos el evento)
