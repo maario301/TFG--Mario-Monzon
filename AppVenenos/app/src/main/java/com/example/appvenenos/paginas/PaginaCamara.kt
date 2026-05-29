@@ -1,8 +1,10 @@
 package com.example.appvenenos.paginas
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +15,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.appvenenos.Classifier
 import com.example.appvenenos.MainActivity
@@ -24,6 +29,24 @@ class PaginaCamara : Fragment() {
     private lateinit var classifier: Classifier
     private lateinit var imgPreview: ImageView
     private lateinit var txtResultado: TextView
+
+    // Si true, al conceder el permiso se abre la cámara; si false, solo se pidió al entrar
+    private var abrirCamaraTrasPermiso = false
+
+    // Solicitud del permiso de cámara en tiempo de ejecución
+    private val permisoCamara =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { concedido ->
+            if (concedido) {
+                if (abrirCamaraTrasPermiso) lanzarCamara()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Necesitas conceder el permiso de cámara para analizar una foto",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            abrirCamaraTrasPermiso = false
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,11 +68,33 @@ class PaginaCamara : Fragment() {
         }
 
         btnCapture.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, 101)
+            // Como el manifest declara el permiso CAMERA, Android exige concederlo
+            // en runtime antes de abrir la cámara (si no, SecurityException).
+            if (tienePermisoCamara()) {
+                lanzarCamara()
+            } else {
+                abrirCamaraTrasPermiso = true
+                permisoCamara.launch(Manifest.permission.CAMERA)
+            }
+        }
+
+        // Pedimos el permiso de cámara nada más entrar en esta página
+        if (!tienePermisoCamara()) {
+            abrirCamaraTrasPermiso = false
+            permisoCamara.launch(Manifest.permission.CAMERA)
         }
 
         return root
+    }
+
+    private fun tienePermisoCamara(): Boolean =
+        ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+    private fun lanzarCamara() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, 101)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -62,7 +107,7 @@ class PaginaCamara : Fragment() {
                 val uri: Uri? = data?.data
                 bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
             } else if (requestCode == 101) { // Cámara
-                bitmap = data?.extras?.get("data") as Bitmap
+                bitmap = data?.extras?.get("data") as? Bitmap
             }
 
             if (bitmap != null) {
@@ -73,9 +118,13 @@ class PaginaCamara : Fragment() {
                 txtResultado.text = "Detectado: $nombreAnimal"
 
                 if (nombreAnimal != "Otros") {
-                    // 1. Guardamos el nombre en SharedPreferences para que el Historial lo sepa
+                    // 1. Guardamos el nombre y el origen (cámara/galería) para que el flujo lo sepa
+                    val origen = if (requestCode == 100) "galeria" else "camara"
                     val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
-                    prefs.edit().putString("ultimo_animal", nombreAnimal).apply()
+                    prefs.edit()
+                        .putString("ultimo_animal", nombreAnimal)
+                        .putString("origen_deteccion", origen)
+                        .apply()
 
                     // 2. IMPORTANTE: Aquí mandamos al usuario al HISTORIAL
                     (activity as? MainActivity)?.let { main ->

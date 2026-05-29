@@ -113,6 +113,11 @@ REST_FRAMEWORK = {
     )
 }
 
+# OAuth de Google: ID del cliente WEB (no el de Android). Lo creas en Google Cloud
+# (APIs y servicios -> Credenciales -> Crear ID de cliente OAuth -> Aplicación web).
+# El id_token que manda la app debe tener este valor en su campo "aud".
+GOOGLE_CLIENT_ID = '1008038388461-8aroje9apah72m44ciqk61lq14m6f7l0.apps.googleusercontent.com'
+
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import AnimalViewSet, ConsultaViewSet, RegistroUsuarioView, GuardarAvistamientoView, ListarAvistamientosView, MeView
+from .views import AnimalViewSet, ConsultaViewSet, RegistroUsuarioView, GuardarAvistamientoView, ListarAvistamientosView, MeView, GoogleLoginView
 
 router = DefaultRouter()
 router.register(r'animales', AnimalViewSet)
@@ -14,5 +14,6 @@ urlpatterns = [
     path('avistamientos/', ListarAvistamientosView.as_view(), name='listar_avistamientos'),
     path('avistamientos/guardar/', GuardarAvistamientoView.as_view(), name='guardar_avistamiento'),
     path('me/', MeView.as_view(), name='me'),
+    path('auth/google/', GoogleLoginView.as_view(), name='google_login'),
     path('', include(router.urls)),
 ]

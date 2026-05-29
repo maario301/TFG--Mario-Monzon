@@ -2,7 +2,11 @@ from rest_framework import viewsets, status, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
+from django.conf import settings
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 from .models import Animal, Consulta
 from .serializers import AnimalSerializer, ConsultaSerializer
 
@@ -79,6 +83,50 @@ class MeView(APIView):
         return Response({
             'username': request.user.username,
             'is_staff': request.user.is_staff
+        })
+
+
+class GoogleLoginView(APIView):
+    """Recibe el id_token de Google que manda la app, lo verifica con Google,
+    crea/recupera el usuario y devuelve un JWT igual que el login normal."""
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data.get('id_token')
+        if not token:
+            return Response({'error': 'Falta id_token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 1. Verificamos el token contra Google (firma, caducidad y audiencia)
+        try:
+            info = google_id_token.verify_oauth2_token(
+                token, google_requests.Request(), settings.GOOGLE_CLIENT_ID
+            )
+        except ValueError:
+            return Response({'error': 'Token de Google no válido'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        email = info.get('email')
+        if not email:
+            return Response({'error': 'El token no contiene email'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 2. Buscamos o creamos el usuario (usamos el email como username)
+        user, creado = User.objects.get_or_create(
+            username=email,
+            defaults={
+                'email': email,
+                'first_name': info.get('given_name', ''),
+                'last_name': info.get('family_name', ''),
+            }
+        )
+        if creado:
+            # Cuenta solo de Google: sin contraseña utilizable
+            user.set_unusable_password()
+            user.save()
+
+        # 3. Emitimos el JWT de siempre (SimpleJWT)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
         })
 
 class ListarAvistamientosView(APIView):

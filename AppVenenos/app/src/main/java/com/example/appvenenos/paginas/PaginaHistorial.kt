@@ -27,6 +27,7 @@ class PaginaHistorial : Fragment() {
         // 1. Miramos si la cámara guardó algún animal recientemente
         val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
         val animalBuscado = prefs.getString("ultimo_animal", null)
+        val origenDeteccion = prefs.getString("origen_deteccion", null)
 
         val token = SessionManager(requireContext()).fetchAuthToken()
         if (token != null) {
@@ -38,13 +39,13 @@ class PaginaHistorial : Fragment() {
                         // 2. Si venimos de la cámara y hay un nombre, filtramos la lista
                         if (animalBuscado != null) {
                             val listaFiltrada = listaCompleta.filter { it.nombre_cientifico == animalBuscado }
-                            rv.adapter = AnimalAdaptador(listaFiltrada)
+                            rv.adapter = AnimalAdaptador(listaFiltrada, origenDeteccion)
 
-                            // Limpiamos la preferencia para que al volver a entrar salga todo el historial
-                            prefs.edit().remove("ultimo_animal").apply()
+                            // Limpiamos las preferencias para que al volver a entrar salga todo el historial
+                            prefs.edit().remove("ultimo_animal").remove("origen_deteccion").apply()
                         } else {
-                            // Si entramos normal al historial, mostramos todo
-                            rv.adapter = AnimalAdaptador(listaCompleta)
+                            // Si entramos normal al historial, mostramos todo (origen manual)
+                            rv.adapter = AnimalAdaptador(listaCompleta, null)
                         }
                     }
                 }

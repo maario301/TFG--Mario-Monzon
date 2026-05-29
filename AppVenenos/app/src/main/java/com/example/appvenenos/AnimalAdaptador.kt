@@ -15,8 +15,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.fragment.app.Fragment
 
-class AnimalAdaptador(private val listaAnimales: List<Animal>) :
-    RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
+class AnimalAdaptador(
+    private val listaAnimales: List<Animal>,
+    private val origen: String? = null
+) : RecyclerView.Adapter<AnimalAdaptador.AnimalViewHolder>() {
 
     class AnimalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgAnimal: ImageView = view.findViewById(R.id.imgAnimal)
@@ -51,17 +53,21 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
         holder.btnLocalizar.setOnClickListener {
             val activity = context as? MainActivity
 
+            // Formateamos el nombre científico para que coincida con el archivo drawable
+            // Ejemplo: "Vipera Latastei" -> "vipera_latastei"
+            val nombreFormateado = animal.nombre_cientifico
+                .lowercase()
+                .trim()
+                .replace(" ", "_")
+
+            val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
+
             val bundle = Bundle().apply {
                 putString("nombre", animal.nombre_comun)
-
-                // Formateamos el nombre científico para que coincida con el archivo drawable
-                // Ejemplo: "Vipera Latastei" -> "vipera_latastei"
-                val nombreFormateado = animal.nombre_cientifico
-                    .lowercase()
-                    .trim()
-                    .replace(" ", "_")
-
                 putString("cientifico", nombreFormateado)
+                putString("fecha", fechaActual)
+                // "camara" -> GPS real | si no, colocación manual en el mapa
+                putString("origen", origen ?: "galeria")
             }
 
             // Creamos la instancia de PaginaMapa con los argumentos
@@ -88,18 +94,6 @@ class AnimalAdaptador(private val listaAnimales: List<Animal>) :
             .load(if (imageResId != 0) imageResId else android.R.drawable.ic_menu_gallery)
             .centerCrop()
             .into(holder.imgAnimal)
-        val bundle = Bundle().apply {
-            putString("nombre", animal.nombre_comun)
-            val nombreFormateado = animal.nombre_cientifico
-                .lowercase()
-                .trim()
-                .replace(" ", "_")
-            putString("cientifico", nombreFormateado)
-
-            // AÑADIR FECHA ACTUAL
-            val fecha = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
-            putString("fecha", fecha)
-        }
     }
 
     override fun getItemCount() = listaAnimales.size
