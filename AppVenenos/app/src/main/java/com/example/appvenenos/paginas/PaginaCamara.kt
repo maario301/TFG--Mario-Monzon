@@ -30,6 +30,10 @@ class PaginaCamara : Fragment() {
     private lateinit var imgPreview: ImageView
     private lateinit var txtResultado: TextView
 
+    // Foto actualmente cargada (de cámara o galería) a la espera de ser analizada
+    private var bitmapActual: Bitmap? = null
+    private var origenActual: String = ""
+
     // Si true, al conceder el permiso se abre la cámara; si false, solo se pidió al entrar
     private var abrirCamaraTrasPermiso = false
 
@@ -41,7 +45,7 @@ class PaginaCamara : Fragment() {
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "Necesitas conceder el permiso de cámara para analizar una foto",
+                    "Necesitas conceder el permiso de cámara para hacer una foto",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -59,17 +63,19 @@ class PaginaCamara : Fragment() {
         imgPreview = root.findViewById(R.id.imgPreview)
         txtResultado = root.findViewById(R.id.txtPrediction)
         val btnGallery: Button = root.findViewById(R.id.btnGallery)
-        val btnCapture: Button = root.findViewById(R.id.btnCapture)
+        val btnCamera: Button = root.findViewById(R.id.btnCamera)
+        val btnAnalizar: Button = root.findViewById(R.id.btnAnalizar)
 
+        // GALERÍA: solo elige la foto y la muestra (no analiza todavía)
         btnGallery.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 100)
         }
 
-        btnCapture.setOnClickListener {
-            // Como el manifest declara el permiso CAMERA, Android exige concederlo
-            // en runtime antes de abrir la cámara (si no, SecurityException).
+        // CÁMARA: hace la foto y la muestra (no analiza todavía)
+        btnCamera.setOnClickListener {
+            // El manifest declara el permiso CAMERA, así que Android exige concederlo en runtime
             if (tienePermisoCamara()) {
                 lanzarCamara()
             } else {
@@ -77,6 +83,9 @@ class PaginaCamara : Fragment() {
                 permisoCamara.launch(Manifest.permission.CAMERA)
             }
         }
+
+        // ANALIZAR: analiza la foto que esté cargada en ese momento
+        btnAnalizar.setOnClickListener { analizar() }
 
         // Pedimos el permiso de cámara nada más entrar en esta página
         if (!tienePermisoCamara()) {
@@ -97,46 +106,68 @@ class PaginaCamara : Fragment() {
         startActivityForResult(intent, 101)
     }
 
+    // Solo carga la foto en pantalla; NO la analiza (eso lo hace el botón Analizar)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             var bitmap: Bitmap? = null
+            var origen = ""
 
             if (requestCode == 100) { // Galería
                 val uri: Uri? = data?.data
                 bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                origen = "galeria"
             } else if (requestCode == 101) { // Cámara
                 bitmap = data?.extras?.get("data") as? Bitmap
+                origen = "camara"
             }
 
             if (bitmap != null) {
+                bitmapActual = bitmap
+                origenActual = origen
                 imgPreview.setImageBitmap(bitmap)
                 imgPreview.visibility = View.VISIBLE
-
-                val nombreAnimal = classifier.predict(bitmap)
-                txtResultado.text = "Detectado: $nombreAnimal"
-
-                if (nombreAnimal != "Otros") {
-                    // 1. Guardamos el nombre y el origen (cámara/galería) para que el flujo lo sepa
-                    val origen = if (requestCode == 100) "galeria" else "camara"
-                    val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
-                    prefs.edit()
-                        .putString("ultimo_animal", nombreAnimal)
-                        .putString("origen_deteccion", origen)
-                        .apply()
-
-                    // 2. IMPORTANTE: Aquí mandamos al usuario al HISTORIAL
-                    (activity as? MainActivity)?.let { main ->
-                        // Cambiamos al fragmento de Historial
-                        main.cambiarPagina(PaginaHistorial())
-
-                        // 3. Sincronizamos el menú inferior para que marque el icono de Historial
-                        val navBar = main.findViewById<BottomNavigationView>(R.id.barra_navegacion)
-                        navBar.selectedItemId = R.id.nav_historial
-                    }
-                }
+                txtResultado.text = "Foto lista. Pulsa \"Analizar\"."
             }
+        }
+    }
+
+    // Analiza la foto cargada y, si reconoce un animal, lleva al historial
+    private fun analizar() {
+        val bitmap = bitmapActual
+        if (bitmap == null) {
+            Toast.makeText(
+                requireContext(),
+                "Primero haz una foto o elige una de la galería",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val nombreAnimal = classifier.predict(bitmap)
+        txtResultado.text = "Detectado: $nombreAnimal"
+
+        if (nombreAnimal != "Otros") {
+            // Guardamos el nombre y el origen (cámara/galería) para el resto del flujo
+            val prefs = requireContext().getSharedPreferences("AppVenenos", Context.MODE_PRIVATE)
+            prefs.edit()
+                .putString("ultimo_animal", nombreAnimal)
+                .putString("origen_deteccion", origenActual)
+                .apply()
+
+            // Llevamos al usuario al HISTORIAL filtrado por el animal detectado
+            (activity as? MainActivity)?.let { main ->
+                main.cambiarPagina(PaginaHistorial())
+                val navBar = main.findViewById<BottomNavigationView>(R.id.barra_navegacion)
+                navBar.selectedItemId = R.id.nav_historial
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "No se ha reconocido un animal venenoso (resultado: Otros)",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
