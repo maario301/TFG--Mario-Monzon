@@ -7,11 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.example.appvenenos.Animal
+import com.example.appvenenos.Avistamiento
+import com.example.appvenenos.ConexionApi
 import com.example.appvenenos.R
+import com.example.appvenenos.SessionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PaginaInicio : Fragment() {
 
@@ -32,6 +41,83 @@ class PaginaInicio : Fragment() {
                         "4. Llama al 112 o acude al hospital más cercano.")
                 .setPositiveButton("Entendido", null)
                 .show()
+        }
+
+        // --- BLOQUE: ESTADÍSTICAS EN VIVO (datos reales del backend) ---
+        val txtStatTotal = root.findViewById<TextView>(R.id.txtStatTotal)
+        val txtStatEspecies = root.findViewById<TextView>(R.id.txtStatEspecies)
+        val txtStatUltimo = root.findViewById<TextView>(R.id.txtStatUltimo)
+
+        val token = SessionManager(requireContext()).fetchAuthToken()
+        if (token != null) {
+            ConexionApi.instancia.getAvistamientos("Bearer $token")
+                .enqueue(object : Callback<List<Avistamiento>> {
+                    override fun onResponse(call: Call<List<Avistamiento>>, response: Response<List<Avistamiento>>) {
+                        if (!isAdded) return
+                        if (response.isSuccessful) {
+                            val lista = response.body() ?: emptyList()
+                            txtStatTotal.text = lista.size.toString()
+                            txtStatEspecies.text = lista.map { it.nombre_cientifico }.distinct().size.toString()
+
+                            val ultimo = lista.maxByOrNull { it.id }
+                            txtStatUltimo.text = if (ultimo != null) {
+                                "🆕 Último: ${ultimo.nombre_comun} (${ultimo.fecha})"
+                            } else {
+                                "Aún no hay avistamientos registrados"
+                            }
+                        } else {
+                            txtStatUltimo.text = "No se pudieron cargar las estadísticas"
+                        }
+                    }
+                    override fun onFailure(call: Call<List<Avistamiento>>, t: Throwable) {
+                        if (!isAdded) return
+                        txtStatUltimo.text = "Sin conexión con el servidor"
+                    }
+                })
+        }
+
+        // --- BLOQUE: ANIMAL DEL DÍA (rota cada día y muestra todo lo de la BD) ---
+        val imgAnimalDia = root.findViewById<ImageView>(R.id.imgAnimalDia)
+        val txtNombreDia = root.findViewById<TextView>(R.id.txtNombreDia)
+        val txtCientificoDia = root.findViewById<TextView>(R.id.txtCientificoDia)
+        val txtToxicidadDia = root.findViewById<TextView>(R.id.txtToxicidadDia)
+        val txtDescripcionDia = root.findViewById<TextView>(R.id.txtDescripcionDia)
+        val txtHabitatDia = root.findViewById<TextView>(R.id.txtHabitatDia)
+        val txtSintomasDia = root.findViewById<TextView>(R.id.txtSintomasDia)
+        val txtTratamientoDia = root.findViewById<TextView>(R.id.txtTratamientoDia)
+        val txtCuriosidadDia = root.findViewById<TextView>(R.id.txtCuriosidadDia)
+
+        if (token != null) {
+            ConexionApi.instancia.getAnimales("Bearer $token")
+                .enqueue(object : Callback<List<Animal>> {
+                    override fun onResponse(call: Call<List<Animal>>, response: Response<List<Animal>>) {
+                        if (!isAdded) return
+                        val lista = response.body() ?: emptyList()
+                        if (!response.isSuccessful || lista.isEmpty()) return
+
+                        // Elegimos un animal según el día del año: rota solo y a todos les toca
+                        val diaDelAno = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
+                        val animal = lista[diaDelAno % lista.size]
+
+                        txtNombreDia.text = animal.nombre_comun
+                        txtCientificoDia.text = animal.nombre_cientifico.replace("_", " ")
+                        txtToxicidadDia.text = "Toxicidad: ${animal.toxicidad}"
+                        txtDescripcionDia.text = "📖 ${animal.descripcion ?: "Sin descripción"}"
+                        txtHabitatDia.text = "📍 Dónde encontrarlo: ${animal.habitat ?: "No disponible"}"
+                        txtSintomasDia.text = "🩺 Síntomas: ${animal.sintomas ?: "No especificados"}"
+                        txtTratamientoDia.text = "💊 Tratamiento: ${animal.tratamiento ?: "Consulte a un médico"}"
+                        txtCuriosidadDia.text = "💡 ¿Sabías que...? ${animal.curiosidad ?: "—"}"
+
+                        // Imagen del animal desde drawables (por nombre científico)
+                        val nombreFoto = animal.nombre_cientifico.lowercase().trim().replace(" ", "_")
+                        val resId = resources.getIdentifier(nombreFoto, "drawable", requireContext().packageName)
+                        Glide.with(this@PaginaInicio)
+                            .load(if (resId != 0) resId else R.drawable.serpiente)
+                            .centerCrop()
+                            .into(imgAnimalDia)
+                    }
+                    override fun onFailure(call: Call<List<Animal>>, t: Throwable) {}
+                })
         }
 
         // --- BLOQUE 2: CONSEJOS DE PREVENCIÓN EXTENSOS ---

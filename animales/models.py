@@ -6,10 +6,13 @@ class Animal(models.Model):
     nombre_cientifico = models.CharField(max_length=100, unique=True)
     descripcion = models.TextField()
     
-    toxicidad = models.CharField(max_length=50) 
+    toxicidad = models.CharField(max_length=50)
     sintomas = models.TextField()
     tratamiento = models.TextField()
-    
+
+    habitat = models.TextField(blank=True, null=True)
+    curiosidad = models.TextField(blank=True, null=True)
+
     imagen_url = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):

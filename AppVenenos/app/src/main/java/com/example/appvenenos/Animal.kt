@@ -10,5 +10,7 @@ data class Animal(
     @SerializedName("toxicidad") val toxicidad: String,
     @SerializedName("sintomas") val sintomas: String?,
     @SerializedName("tratamiento") val tratamiento: String?,
+    @SerializedName("habitat") val habitat: String?,
+    @SerializedName("curiosidad") val curiosidad: String?,
     @SerializedName("imagen_url") val imagen_url: String?
 )
