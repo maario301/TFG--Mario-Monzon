@@ -76,12 +76,14 @@ class AnimalAdaptador(
             }
 
             activity?.let { main ->
-                // Cambiar al fragmento del mapa
+                // Cambiar al fragmento del mapa (con los datos del avistamiento)
                 main.cambiarPagina(fragmentMapa)
 
-                // Actualizar visualmente la barra de navegación inferior
+                // Marcar visualmente el icono "Mapa" SIN recrear el fragmento.
+                // (usar selectedItemId dispararía el listener y crearía un PaginaMapa()
+                //  vacío encima, perdiendo los argumentos -> no aparecía el marcador)
                 val navBar = main.findViewById<BottomNavigationView>(R.id.barra_navegacion)
-                navBar.selectedItemId = R.id.nav_mapa
+                navBar.menu.findItem(R.id.nav_mapa).isChecked = true
             }
         }
 

@@ -47,4 +47,3 @@ Takifugu_rubripes
 Varanus_komodoensis
 Vespa_mandarinia
 Vipera_latastei
-Otros

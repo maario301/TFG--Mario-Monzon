@@ -59,20 +59,21 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
     // Mapeamos los marcadores de Google Maps con su ID de base de datos
     private val marcadoresMap = mutableMapOf<Marker, Int>()
 
-    // Solicitud de permiso de ubicación (solo se usa cuando el origen es la cámara)
+    // Solicitud de permiso de ubicación: solo sirve para centrar el mapa cerca del
+    // usuario como comodidad. La colocación del marcador siempre es manual.
     private val permisoUbicacion =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { concedido ->
             if (!isAdded) return@registerForActivityResult
             if (concedido) {
                 habilitarMiUbicacion()
-                obtenerUbicacionYRegistrar()
+                centrarYProponerUbicacion()
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "Sin permiso de ubicación: coloca el marcador manualmente",
+                    "Sin ubicación: toca el mapa para colocar el marcador donde quieras",
                     Toast.LENGTH_LONG
                 ).show()
-                activarModoManual()
+                // El modo manual ya está activo, así que el usuario puede tocar el mapa
             }
         }
 
@@ -122,18 +123,16 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
 
         cargarAvistamientos()
 
-        // Si viene un avistamiento nuevo para registrar
+        // Si viene un avistamiento nuevo para registrar (venga de cámara o de galería),
+        // el usuario SIEMPRE coloca el marcador donde quiera tocando el mapa.
         if (nombreComun.isNotEmpty()) {
-            if (origen == "camara") {
-                // Foto en directo -> usamos la ubicación real del usuario
-                if (tienePermisoUbicacion()) {
-                    obtenerUbicacionYRegistrar()
-                } else {
-                    permisoUbicacion.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                }
+            activarModoManual()
+            // Si tenemos permiso de ubicación, centramos el mapa cerca del usuario y le
+            // dejamos un marcador de partida que puede arrastrar o reubicar tocando el mapa.
+            if (tienePermisoUbicacion()) {
+                centrarYProponerUbicacion()
             } else {
-                // Foto de galería (o desconocido) -> el usuario coloca el marcador a mano
-                activarModoManual()
+                permisoUbicacion.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }
@@ -149,37 +148,34 @@ class PaginaMapa : Fragment(), OnMapReadyCallback {
         googleMap?.isMyLocationEnabled = true
     }
 
-    // Obtiene la posición GPS actual y registra el avistamiento ahí
+    // Centra el mapa en la ubicación del usuario y deja un marcador de partida editable.
+    // No registra nada: solo es un punto de partida cómodo; el usuario decide dónde dejarlo.
     @SuppressLint("MissingPermission")
-    private fun obtenerUbicacionYRegistrar() {
+    private fun centrarYProponerUbicacion() {
+        val map = googleMap ?: return
         val cliente = LocationServices.getFusedLocationProviderClient(requireContext())
         val cts = CancellationTokenSource()
 
         cliente.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.token)
             .addOnSuccessListener { loc ->
                 if (!isAdded) return@addOnSuccessListener
-                if (loc != null) {
-                    registrarAvistamientoEn(LatLng(loc.latitude, loc.longitude))
-                } else {
-                    // A veces getCurrentLocation devuelve null: probamos con la última conocida
-                    cliente.lastLocation.addOnSuccessListener { ultima ->
-                        if (!isAdded) return@addOnSuccessListener
-                        if (ultima != null) {
-                            registrarAvistamientoEn(LatLng(ultima.latitude, ultima.longitude))
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "No se pudo obtener tu ubicación. Colócala manualmente.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            activarModoManual()
-                        }
-                    }
+                val punto = when {
+                    loc != null -> LatLng(loc.latitude, loc.longitude)
+                    else -> return@addOnSuccessListener
                 }
-            }
-            .addOnFailureListener {
-                if (!isAdded) return@addOnFailureListener
-                activarModoManual()
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(punto, 16f))
+                // Marcador de partida: se puede arrastrar o reubicar tocando el mapa
+                if (marcadorBorrador == null) {
+                    marcadorBorrador = map.addMarker(
+                        MarkerOptions()
+                            .position(punto)
+                            .draggable(true)
+                            .title("Arrastra o toca el mapa para ajustar")
+                    )
+                } else {
+                    marcadorBorrador?.position = punto
+                }
+                btnConfirmar?.isEnabled = true
             }
     }
 

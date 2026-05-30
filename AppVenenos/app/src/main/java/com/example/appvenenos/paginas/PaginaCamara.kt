@@ -6,9 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import androidx.core.content.FileProvider
+import java.io.File
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +39,9 @@ class PaginaCamara : Fragment() {
 
     // Si true, al conceder el permiso se abre la cámara; si false, solo se pidió al entrar
     private var abrirCamaraTrasPermiso = false
+
+    // Fichero temporal donde la cámara guarda la foto a resolución completa
+    private var fotoTempUri: Uri? = null
 
     // Solicitud del permiso de cámara en tiempo de ejecución
     private val permisoCamara =
@@ -102,7 +108,18 @@ class PaginaCamara : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
 
     private fun lanzarCamara() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        // Creamos un fichero temporal en la caché de la app y le pasamos su Uri a la
+        // cámara con EXTRA_OUTPUT. Así obtenemos la foto a resolución completa en vez
+        // del thumbnail minúsculo de data.extras["data"], que era inservible para la IA.
+        val ctx = requireContext()
+        val archivo = File.createTempFile("foto_", ".jpg", ctx.cacheDir)
+        val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.fileprovider", archivo)
+        fotoTempUri = uri
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        }
         startActivityForResult(intent, 101)
     }
 
@@ -119,7 +136,12 @@ class PaginaCamara : Fragment() {
                 bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
                 origen = "galeria"
             } else if (requestCode == 101) { // Cámara
-                bitmap = data?.extras?.get("data") as? Bitmap
+                // Leemos la foto a resolución completa desde el fichero temporal
+                fotoTempUri?.let { uri ->
+                    requireContext().contentResolver.openInputStream(uri)?.use { stream ->
+                        bitmap = BitmapFactory.decodeStream(stream)
+                    }
+                }
                 origen = "camara"
             }
 
@@ -145,8 +167,10 @@ class PaginaCamara : Fragment() {
             return
         }
 
-        val nombreAnimal = classifier.predict(bitmap)
-        txtResultado.text = "Detectado: $nombreAnimal"
+        val resultado = classifier.predecirConDetalle(bitmap)
+        val nombreAnimal = resultado.etiqueta
+        val porcentaje = (resultado.confianza * 100).toInt()
+        txtResultado.text = "Detectado: $nombreAnimal ($porcentaje%)"
 
         if (nombreAnimal != "Otros") {
             // Guardamos el nombre y el origen (cámara/galería) para el resto del flujo
